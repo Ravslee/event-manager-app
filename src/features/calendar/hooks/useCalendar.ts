@@ -6,11 +6,12 @@ import {
   nextMonth,
   previousMonth,
 } from "../utils/calendar.utils";
+import { calendarEvents } from "../mock/calendarEvents";
 
 export default function useCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const days = useMemo(() => generateMonth(currentMonth), [currentMonth]);
+  const days = useMemo(() => generateMonth(currentMonth, calendarEvents), [currentMonth]);
 
   const monthTitle = useMemo(() => getMonthTitle(currentMonth), [currentMonth]);
 

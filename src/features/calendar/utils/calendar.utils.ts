@@ -11,9 +11,12 @@ import {
   subMonths,
 } from "date-fns";
 
-import { type CalendarDay } from "../types/calendar.types";
+import { type CalendarDay, type CalendarEvent } from "../types/calendar.types";
 
-export function generateMonth(month: Date): CalendarDay[] {
+export function generateMonth(
+  month: Date,
+  events: CalendarEvent[],
+): CalendarDay[] {
   const monthStart = startOfMonth(month);
 
   const monthEnd = endOfMonth(month);
@@ -34,7 +37,7 @@ export function generateMonth(month: Date): CalendarDay[] {
     date,
     isCurrentMonth: isSameMonth(date, month),
     isToday: isSameDay(date, new Date()),
-    events: []
+    events: events.filter((event) => isSameDay(event.start, date)),
   }));
 }
 

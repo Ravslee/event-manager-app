@@ -1,7 +1,15 @@
+export type EventStatus = "confirmed" | "pending" | "completed" | "cancelled";
+
 export interface CalendarEvent {
   id: string;
   title: string;
-  color?: string;
+
+  start: Date;
+  end: Date;
+
+  color: string;
+
+  status: EventStatus;
 }
 
 export interface CalendarDay {
@@ -10,4 +18,3 @@ export interface CalendarDay {
   isToday: boolean;
   events: CalendarEvent[];
 }
-
