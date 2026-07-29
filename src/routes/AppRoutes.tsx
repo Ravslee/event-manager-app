@@ -10,6 +10,7 @@ import CalendarPage from "@/features/calendar/pages/CalendarPage";
 import EventsPage from "@/features/events/pages/EventsPage";
 import PaymentsPage from "@/features/payments/pages/PaymentsPage";
 import ServicesPage from "@/features/services/pages/ServicesPage";
+import ServiceDetailsPage from "@/features/services/pages/ServiceDetailsPage";
 import EventTypesPage from "@/features/event-types/pages/EventTypesPage";
 import SettingsPage from "@/features/settings/pages/SettingsPage";
 import MainLayout from "@/layouts/MainLayout";
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
           {
             path: "services",
             element: <ServicesPage />,
+          },
+          {
+            path: "services/:id",
+            element: <ServiceDetailsPage />,
           },
           {
             path: "event-types",

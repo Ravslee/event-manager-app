@@ -22,8 +22,10 @@ export function VenueServicesStep() {
   useEffect(() => {
     api.get("/services")
       .then((res) => {
-        if (res.data?.success && res.data?.data?.services?.length > 0) {
-          setServices(res.data.data.services);
+        const list = res.data?.data?.services || [];
+        const activeList = list.filter((s: any) => s.isActive !== false);
+        if (activeList.length > 0) {
+          setServices(activeList);
         }
       })
       .catch((err) => {
