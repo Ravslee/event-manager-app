@@ -1,8 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { PageHeader } from "@/components/common/PageHeader";
-
 export default function AppLayout() {
   return (
     <div className="flex h-screen bg-muted/20">

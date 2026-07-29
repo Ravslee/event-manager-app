@@ -2,7 +2,6 @@ import {
   addDays,
   addMonths,
   eachDayOfInterval,
-  endOfMonth,
   format,
   isSameDay,
   isSameMonth,
@@ -18,8 +17,6 @@ export function generateMonth(
   events: CalendarEvent[],
 ): CalendarDay[] {
   const monthStart = startOfMonth(month);
-
-  const monthEnd = endOfMonth(month);
 
   const calendarStart = startOfWeek(monthStart, {
     weekStartsOn: 0,

@@ -1,3 +1,9 @@
+import { EventWizard } from "../components/wizard";
+
 export default function EventsPage() {
-  return <h1>Events</h1>;
+  return (
+    <div className="container mx-auto py-2">
+      <EventWizard />
+    </div>
+  );
 }

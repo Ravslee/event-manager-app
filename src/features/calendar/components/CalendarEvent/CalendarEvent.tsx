@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { CalendarEventProps } from "./CalendarEvent.types";
 
-type EventColor = "purple" | "green" | "blue" | "orange" | "red";
+export type EventColor = "purple" | "green" | "blue" | "orange" | "red";
 
 const EVENT_COLORS: any = {
   purple: "bg-violet-500",

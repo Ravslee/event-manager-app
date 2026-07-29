@@ -3,8 +3,6 @@ import StatCard from "../components/StatCard";
 import {
   Calendar,
   DollarSign,
-  ShoppingCart,
-  Package,
   BanknoteArrowDown,
 } from "lucide-react";
 import FeaturedEventCard from "@/features/dashboard/components/FeaturedEventCard";

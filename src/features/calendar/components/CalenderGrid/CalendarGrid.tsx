@@ -1,4 +1,3 @@
-import useCalendar from "../../hooks/useCalendar";
 import type { CalendarDay } from "../../types/calendar.types";
 import CalendarCell from "./CalenderCell";
 import WeekHeader from "./WeekHeader";
