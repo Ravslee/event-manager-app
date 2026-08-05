@@ -65,7 +65,6 @@ export default function ServiceDetailsPage() {
       color: "#6366F1",
       image: "",
       status: "Active",
-      unitPrice: 0,
       minCapacity: 0,
     },
   });
@@ -74,6 +73,7 @@ export default function ServiceDetailsPage() {
   const watchStatus = watch("status");
   const watchImage = watch("image");
   const watchColor = watch("color");
+  const watchPricingModel = watch("pricingModel");
 
   useEffect(() => {
     if (!isNew && id) {
@@ -90,7 +90,6 @@ export default function ServiceDetailsPage() {
               color: service.color || "#6366F1",
               image: service.image || "",
               status: service.status || "Active",
-              unitPrice: service.unitPrice || 0,
               minCapacity: service.minCapacity || 0,
             });
           }
@@ -289,18 +288,32 @@ export default function ServiceDetailsPage() {
                   </select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
                   <div className="space-y-2">
-                    <Label htmlFor="price">Base Service Fee (Rate)</Label>
-                    <Input id="price" type="number" step="0.01" placeholder="1500.00" className="h-10" {...register("price")} />
+                    <Label htmlFor="price">
+                      {watchPricingModel === "hourly"
+                        ? "Hourly Rate ($ / hr)"
+                        : watchPricingModel === "per_guest"
+                        ? "Price per Guest ($ / guest)"
+                        : "Flat Fee ($)"}
+                    </Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      step="0.01"
+                      placeholder={
+                        watchPricingModel === "hourly"
+                          ? "150.00"
+                          : watchPricingModel === "per_guest"
+                          ? "85.00"
+                          : "1500.00"
+                      }
+                      className="h-10"
+                      {...register("price")}
+                    />
                     {errors.price?.message && (
                       <p className="text-xs text-destructive">{String(errors.price.message)}</p>
                     )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="unitPrice">Unit Price (per Guest)</Label>
-                    <Input id="unitPrice" type="number" step="0.01" placeholder="85.00" className="h-10" {...register("unitPrice")} />
                   </div>
                 </div>
               </div>

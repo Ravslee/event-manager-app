@@ -42,14 +42,27 @@ export function ReviewStep() {
   const selectedEventTypeName = eventTypes.find((t) => t._id === formValues.eventTypeId)?.name || "Corporate Gala";
 
   const selectedServices = Object.entries(watchedServices)
-    .filter(([_, checked]) => checked)
-    .map(([serviceId, _]) => {
-      return services.find((s) => s._id === serviceId);
+    .filter(([_, value]: any) => value?.checked)
+    .map(([serviceId, value]: any) => {
+      const service = services.find((s) => s._id === serviceId);
+      if (!service) return null;
+
+      const qty = value.quantity !== undefined
+        ? Number(value.quantity)
+        : (service.pricingModel === "hourly" ? Number(watchedDuration) || 1 : 1);
+
+      const calculatedPrice = (service.price || 0) * qty;
+
+      return {
+        ...service,
+        quantity: qty,
+        calculatedPrice,
+      };
     })
-    .filter(Boolean);
+    .filter(Boolean) as any[];
 
   const totalAmount = selectedServices.reduce((sum, service) => {
-    return sum + (service?.price || 0) * Number(watchedDuration);
+    return sum + service.calculatedPrice;
   }, 0);
 
   return (
@@ -135,12 +148,14 @@ export function ReviewStep() {
             {/* Services detail list */}
             {selectedServices.length > 0 && (
               <div className="border-t pt-3 space-y-1.5">
-                <p className="text-xs font-semibold text-muted-foreground">Services ({watchedDuration} hrs)</p>
+                <p className="text-xs font-semibold text-muted-foreground">Booked Services</p>
                 {selectedServices.map((service: any) => (
-                  <div key={service._id} className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">{service.name}</span>
-                    <span className="font-medium text-foreground">${(service.price * Number(watchedDuration)).toFixed(2)}</span>
-                  </div>
+                   <div key={service._id} className="flex justify-between text-xs">
+                     <span className="text-muted-foreground">
+                       {service.name} (x{service.quantity} {service.pricingModel === "hourly" ? "hrs" : service.pricingModel === "per_guest" ? "guests" : "qty"})
+                     </span>
+                     <span className="font-medium text-foreground">${service.calculatedPrice.toFixed(2)}</span>
+                   </div>
                 ))}
                 <div className="flex justify-between border-t pt-2 mt-2 font-bold text-foreground">
                   <span>Total Amount</span>

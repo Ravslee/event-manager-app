@@ -30,31 +30,14 @@ const eventMasterSchema = z.object({
   notes: reviewSchema.shape.notes,
 });
 
-const EventWizard: FC = () => {
+interface EventWizardProps {
+  eventId?: string;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => {
   const navigate = useNavigate();
-  const {
-    currentStep,
-    currentStepConfig,
-    steps,
-    isFirstStep,
-    isLastStep,
-    nextStep,
-    previousStep,
-    goToStep,
-  } = useEventWizard();
-
-  const [services, setServices] = useState<any[]>([]);
-
-  useEffect(() => {
-    api.get("/services")
-      .then((res) => {
-        if (res.data?.success && res.data?.data?.services) {
-          setServices(res.data.data.services);
-        }
-      })
-      .catch(() => {});
-  }, []);
-
   const methods = useForm<any>({
     resolver: zodResolver(eventMasterSchema),
     defaultValues: {
@@ -79,6 +62,83 @@ const EventWizard: FC = () => {
     },
     mode: "onChange",
   });
+  const {
+    currentStep,
+    currentStepConfig,
+    steps,
+    isFirstStep,
+    isLastStep,
+    nextStep,
+    previousStep,
+    goToStep,
+  } = useEventWizard();
+
+  const [services, setServices] = useState<any[]>([]);
+
+  useEffect(() => {
+    api.get("/services")
+      .then((res) => {
+        if (res.data?.success && res.data?.data?.services) {
+          setServices(res.data.data.services);
+        }
+      })
+      .catch(() => { });
+  }, []);
+
+  // Fetch Event details for Edit mode
+  useEffect(() => {
+    if (eventId) {
+      api.get(`/events/${eventId}`)
+        .then((res) => {
+          if (res.data?.success && res.data?.data) {
+            const event = res.data.data;
+            
+            // Map booked services array to the form representation
+            const servicesFormVal: Record<string, { checked: boolean; quantity: number }> = {};
+            if (event.bookedServices) {
+              event.bookedServices.forEach((s: any) => {
+                servicesFormVal[s.serviceId] = {
+                  checked: true,
+                  quantity: s.unit,
+                };
+              });
+            }
+
+            // Extract the date from ISO format safely in local timezone
+            let eventDateStr = "";
+            if (event.eventDate) {
+              const d = new Date(event.eventDate);
+              eventDateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+            }
+
+            methods.reset({
+              title: event.title || "",
+              eventTypeId: typeof event.eventTypeId === "object" ? event.eventTypeId?._id : event.eventTypeId || "",
+              eventDate: eventDateStr,
+              startTime: event.startTime || "",
+              endTime: event.endTime || "",
+              client: {
+                name: event.client?.name || "",
+                email: event.client?.email || "",
+                phone: event.client?.phone || "",
+              },
+              venue: {
+                name: event.venue?.name || "",
+                address: event.venue?.address || "",
+                mapLink: event.venue?.mapLink || "",
+              },
+              services: servicesFormVal,
+              estimatedDuration: event.estimatedDuration || 4,
+              notes: event.notes || "",
+            });
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load event for editing:", err);
+        });
+    }
+  }, [eventId, methods]);
+
 
   const stepFields: Record<number, string[]> = {
     1: ["title", "eventTypeId", "eventDate", "startTime", "endTime"],
@@ -89,7 +149,10 @@ const EventWizard: FC = () => {
 
   const handleNext = async () => {
     if (isLastStep) {
-      await methods.handleSubmit((data) => onSubmit(data, "Confirmed"))();
+      await methods.handleSubmit(
+        (data) => onSubmit(data, "Confirmed"),
+        (errors) => console.error("Validation errors on Confirm:", errors)
+      )();
     } else {
       const fieldsToValidate = stepFields[currentStep];
       const isValid = await methods.trigger(fieldsToValidate as any);
@@ -100,26 +163,38 @@ const EventWizard: FC = () => {
   };
 
   const handleSaveDraft = async () => {
-    await methods.handleSubmit((data) => onSubmit(data, "Pending"))();
+    await methods.handleSubmit(
+      (data) => onSubmit(data, "Pending"),
+      (errors) => console.error("Validation errors on Save Draft:", errors)
+    )();
   };
 
   const handleDiscard = () => {
     methods.reset();
     goToStep(1);
+    if (onCancel) {
+      onCancel();
+    }
   };
 
   const onSubmit = async (data: any, status: "Confirmed" | "Pending") => {
     try {
       const bookedServices = Object.entries(data.services)
-        .filter(([_, checked]) => checked)
-        .map(([serviceId, _]) => {
+        .filter(([_, value]: any) => value?.checked)
+        .map(([serviceId, value]: any) => {
           const serviceDetail = services.find((s) => s._id === serviceId);
-          const hourlyPrice = serviceDetail?.price || 0;
+
+          const qty = value.quantity !== undefined
+            ? Number(value.quantity)
+            : (serviceDetail?.pricingModel === "hourly" ? Number(data.estimatedDuration) || 1 : 1);
+
+          const calculatedPrice = serviceDetail ? (serviceDetail.price || 0) * qty : 0;
+
           return {
             serviceId,
             name: serviceDetail?.name || "Unknown Service",
-            price: hourlyPrice * Number(data.estimatedDuration),
-            duration: Number(data.estimatedDuration),
+            price: calculatedPrice,
+            unit: qty,
           };
         });
 
@@ -140,9 +215,15 @@ const EventWizard: FC = () => {
         isActive: true,
       };
 
-      const response = await api.post("/events", payload);
+      const response = eventId
+        ? await api.patch(`/events/${eventId}`, payload)
+        : await api.post("/events", payload);
       if (response.data?.success) {
-        navigate("/calendar");
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          navigate("/calendar");
+        }
       }
     } catch (error) {
       console.error("Failed to create event:", error);
@@ -155,8 +236,8 @@ const EventWizard: FC = () => {
     <FormProvider {...methods}>
       <div className="flex flex-col gap-6 rounded-xl border bg-background p-6 shadow-sm">
         <WizardHeader
-          title="Create New Event"
-          description="Fill in the details to schedule a new creative production or client meeting."
+          title={eventId ? "Edit Event" : "Create New Event"}
+          description={eventId ? "Modify the event details and booked services." : "Fill in the details to schedule a new creative production or client meeting."}
         />
 
         <EventStepper steps={steps} currentStep={currentStep} />

@@ -12,7 +12,7 @@ interface ServiceCardProps {
     category: string;
     pricingModel: string;
     image?: string;
-    status?: string;
+    isActive?: boolean;
   };
   onEdit: (service: any) => void;
   onDelete: (id: string) => void;
@@ -42,13 +42,13 @@ export default function ServiceCard({ service, onEdit, onDelete }: ServiceCardPr
           <span
             className={cn(
               "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm",
-              service.status === "Active"
+              service.isActive
                 ? "bg-emerald-500 text-white"
                 : "bg-orange-500 text-white"
             )}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-            {service.status || "Active"}
+            {service.isActive ? "Active" : "Inactive"}
           </span>
         </div>
 

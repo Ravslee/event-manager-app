@@ -9,7 +9,6 @@ export const serviceSchema = z.object({
   color: z.string().default("#6366F1"),
   image: z.string().optional().default(""),
   status: z.string().default("Active"),
-  unitPrice: z.coerce.number().min(0).optional().default(0),
   minCapacity: z.coerce.number().min(0).optional().default(0),
 });
 

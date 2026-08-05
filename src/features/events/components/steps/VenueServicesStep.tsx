@@ -16,7 +16,7 @@ const defaultServices = [
 ];
 
 export function VenueServicesStep() {
-  const { register, control, watch, formState: { errors } } = useFormContext();
+  const { register, control, watch, setValue, formState: { errors } } = useFormContext();
   const [services, setServices] = useState<any[]>(defaultServices);
 
   useEffect(() => {
@@ -38,10 +38,17 @@ export function VenueServicesStep() {
   const watchedDuration = watch("estimatedDuration") || 0;
 
   const totalAmount = Object.entries(watchedServices)
-    .filter(([_, checked]) => checked)
-    .reduce((sum, [serviceId, _]) => {
+    .filter(([_, value]: any) => value?.checked)
+    .reduce((sum, [serviceId, value]: any) => {
       const service = services.find((s) => s._id === serviceId);
-      return sum + (service?.price || 0) * Number(watchedDuration);
+      if (!service) return sum;
+
+      const qty = value.quantity !== undefined
+        ? Number(value.quantity)
+        : (service.pricingModel === "hourly" ? Number(watchedDuration) || 1 : 1);
+
+      const cost = (service.price || 0) * qty;
+      return sum + cost;
     }, 0);
 
   return (
@@ -102,40 +109,88 @@ export function VenueServicesStep() {
         <Label>Requested Services</Label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {services.map((service) => {
-            const isChecked = !!watchedServices[service._id];
+            const serviceVal = watchedServices[service._id];
+            const isChecked = !!serviceVal?.checked;
+
+            // Format price string based on model
+            let pricingLabel = "";
+            if (service.pricingModel === "hourly") {
+              pricingLabel = `$${service.price} / hr`;
+            } else if (service.pricingModel === "per_guest") {
+              pricingLabel = `$${service.price} / guest`;
+            } else {
+              pricingLabel = `$${service.price} flat`;
+            }
+
             return (
-              <label
+              <div
                 key={service._id}
-                htmlFor={service._id}
                 className={cn(
-                  "flex items-center gap-4 rounded-xl border p-4 cursor-pointer hover:bg-accent/40 transition-all duration-200 select-none",
+                  "flex flex-col gap-3 rounded-xl border p-4 hover:bg-accent/40 transition-all duration-200 select-none",
                   isChecked
                     ? "border-primary bg-primary/5 shadow-[0_0_12px_rgba(99,102,241,0.05)]"
                     : "border-border bg-card"
                 )}
               >
-                <Controller
-                  control={control}
-                  name={`services.${service._id}`}
-                  render={({ field }) => (
-                    <Checkbox
-                      id={service._id}
-                      checked={!!field.value}
-                      onCheckedChange={(checked) => field.onChange(!!checked)}
-                      className="size-5"
-                    />
-                  )}
-                />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-foreground">{service.name}</span>
-                    <span className="text-sm font-medium text-primary">${service.price} / hr</span>
-                  </div>
-                  {service.description && (
-                    <p className="text-xs text-muted-foreground mt-0.5">{service.description}</p>
-                  )}
+                <div className="flex items-center gap-4">
+                  <Controller
+                    control={control}
+                    name={`services.${service._id}.checked`}
+                    render={({ field }) => (
+                      <Checkbox
+                        id={service._id}
+                        checked={!!field.value}
+                        onCheckedChange={(checked) => field.onChange(!!checked)}
+                        className="size-5"
+                      />
+                    )}
+                  />
+                  <label htmlFor={service._id} className="flex-1 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-foreground">{service.name}</span>
+                      <span className="text-sm font-medium text-primary">{pricingLabel}</span>
+                    </div>
+                    {service.description && (
+                      <p className="text-xs text-muted-foreground mt-0.5">{service.description}</p>
+                    )}
+                  </label>
                 </div>
-              </label>
+
+                {isChecked && (
+                  <div
+                    className="mt-1 pt-3 border-t border-dashed border-border/60 flex items-center justify-between gap-4"
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {service.pricingModel === "hourly"
+                        ? "Duration"
+                        : service.pricingModel === "per_guest"
+                        ? "Guests"
+                        : "Quantity"}
+                    </span>
+                    <div className="relative flex items-center max-w-[120px]">
+                      <Input
+                        type="number"
+                        min="1"
+                        className="h-8 pr-8 text-xs font-semibold text-right bg-transparent border border-input rounded"
+                        value={serviceVal?.quantity ?? (service.pricingModel === "hourly" ? watchedDuration : 1)}
+                        onChange={(e) => {
+                          const val = e.target.value === "" ? "" : Number(e.target.value);
+                          setValue(`services.${service._id}.quantity`, val);
+                        }}
+                      />
+                      <span className="absolute right-2 text-[10px] text-muted-foreground font-medium pointer-events-none">
+                        {service.pricingModel === "hourly"
+                          ? "hrs"
+                          : service.pricingModel === "per_guest"
+                          ? "guests"
+                          : "qty"}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>

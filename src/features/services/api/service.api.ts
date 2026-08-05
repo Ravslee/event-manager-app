@@ -4,7 +4,7 @@ import type { ServiceFormModel } from "../schemas/service.schema";
 export const getServices = async () => {
   const response = await api.get("/services");
   const list = response.data?.data?.services || [];
-  return list.filter((s: any) => s.isActive !== false);
+  return list;
 };
 
 export const getService = async (id: string) => {

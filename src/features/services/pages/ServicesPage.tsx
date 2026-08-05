@@ -39,12 +39,12 @@ export default function ServicesPage() {
   // Stats Calculations
   const stats = useMemo(() => {
     const total = services.length;
-    const active = services.filter((s) => s.status !== "Inactive").length;
+    const active = services.filter((s) => s.isActive).length;
     const inactive = total - active;
 
     // Calculate revenue potential based on sum of active prices * average booking rate
     const sumActivePrices = services
-      .filter((s) => s.status !== "Inactive")
+      .filter((s) => s.isActive)
       .reduce((sum, s) => sum + s.price, 0);
     const revenuePotential = sumActivePrices * 78 || 0; // standard business multiplier
 
@@ -169,7 +169,7 @@ export default function ServicesPage() {
         </div>
 
         {/* Revenue Potential (Styled Premium Purple Card) */}
-        <div className="bg-primary text-primary-foreground p-5 rounded-2xl shadow-md flex flex-col justify-between h-28 relative overflow-hidden group">
+        {/* <div className="bg-primary text-primary-foreground p-5 rounded-2xl shadow-md flex flex-col justify-between h-28 relative overflow-hidden group">
           <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-300">
             <DollarSign className="size-24" />
           </div>
@@ -184,7 +184,7 @@ export default function ServicesPage() {
           <span className="text-[10px] font-semibold text-primary-foreground/90">
             +12% from last month
           </span>
-        </div>
+        </div> */}
       </div>
 
       {/* Filter and Control Bar */}
