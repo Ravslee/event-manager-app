@@ -9,6 +9,7 @@ import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import CalendarPage from "@/features/calendar/pages/CalendarPage";
 import EventsPage from "@/features/events/pages/EventsPage";
 import PaymentsPage from "@/features/payments/pages/PaymentsPage";
+import PaymentDetailsPage from "@/features/payments/pages/PaymentDetailsPage";
 import ServicesPage from "@/features/services/pages/ServicesPage";
 import ServiceDetailsPage from "@/features/services/pages/ServiceDetailsPage";
 import EventTypesPage from "@/features/event-types/pages/EventTypesPage";
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
           {
             path: "payments",
             element: <PaymentsPage />,
+          },
+          {
+            path: "payments/:eventId",
+            element: <PaymentDetailsPage />,
           },
           {
             path: "services",

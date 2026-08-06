@@ -11,10 +11,10 @@ export default function ScheduleCard({
   items,
 }: ScheduleCardProps) {
   return (
-    <Card className="overflow-hidden rounded-3xl">
-      <div className="flex items-center justify-between p-6">
+    <Card className="overflow-hidden rounded-xl">
+      <div className="flex items-center justify-between p-4">
         <div>
-          <h2 className="text-2xl font-bold">{title}</h2>
+          <h2 className="text-xl font-bold">{title}</h2>
 
           <p className="text-muted-foreground">{subtitle}</p>
         </div>

@@ -15,7 +15,7 @@ export default function FeaturedEventCard({
   onDetails,
 }: FeaturedEventCardProps) {
   return (
-    <Card className="relative h-[520px] overflow-hidden rounded-3xl border-0 p-0 shadow-md">
+    <Card className="relative h-[300px] overflow-hidden rounded-xl border-0 p-0 shadow-md">
       {/* Background Image */}
       <img
         src={image}
@@ -27,20 +27,20 @@ export default function FeaturedEventCard({
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
 
       {/* Content */}
-      <div className="relative flex h-full flex-col justify-between p-16 text-white">
+      <div className="relative flex h-full flex-col justify-between p-6 text-white">
         {/* Badge */}
-        <Badge className="w-fit rounded-full bg-violet-700 px-4 py-4 text-sx uppercase tracking-wider text-white bg-violet-700">
+        <Badge className="w-fit rounded-full bg-violet-700 px-3 py-1 text-xs uppercase tracking-wider text-white">
           {badge}
         </Badge>
 
         {/* Bottom Section */}
         <div>
-          <h2 className="text-5xl font-bold leading-tight">{title}</h2>
+          <h2 className="text-3xl font-bold leading-tight">{title}</h2>
 
-          <p className="mt-5 text-lg leading-8 text-slate-200">{description}</p>
+          <p className="mt-2 text-sm text-slate-200 line-clamp-2">{description}</p>
 
-          <div className="mt-8 flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
               <CalendarDays className="h-5 w-5" />
 
               <span className="font-medium">{date}</span>

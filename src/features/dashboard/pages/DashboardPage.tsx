@@ -1,49 +1,68 @@
+import { useEffect, useState } from "react";
 import ScheduleCard from "../components/ScheduleCard";
 import StatCard from "../components/StatCard";
-import {
-  Calendar,
-  DollarSign,
-  BanknoteArrowDown,
-} from "lucide-react";
+import { Calendar, DollarSign, BanknoteArrowDown } from "lucide-react";
 import FeaturedEventCard from "@/features/dashboard/components/FeaturedEventCard";
 import RevenueChart from "../components/RevenueChart";
-import {
-  weeklyData,
-  monthlyData,
-} from "../components/RevenueChart/RevenueChart.constants";
+import { weeklyData, monthlyData } from "../components/RevenueChart/RevenueChart.constants";
+import { getDashboardData } from "../api/dashboard.api";
+import type { DashboardData } from "../types/dashboard.types";
+import { formatCurrency } from "@/lib/utils";
+import { format } from "date-fns";
 
 export default function DashboardPage() {
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await getDashboardData();
+        setData(response);
+      } catch (error) {
+        console.error("Failed to load dashboard data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
+
+  if (loading || !data) {
+    return <div className="flex h-[80vh] items-center justify-center text-muted-foreground">Loading dashboard...</div>;
+  }
+
   return (
     <>
       <div className="space-y-6">
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard
             title="Today's Events"
-            value={5}
+            value={data.summary.todayEventsCount}
             icon={Calendar}
-            change={5}
-            progress={50}
+            change={0}
+            progress={data.summary.todayEventsCount > 0 ? 100 : 0}
           />
           <StatCard
             title="Upcoming Events"
-            value={12}
+            value={data.summary.upcomingEventsCount}
             icon={Calendar}
-            change={10}
-            progress={70}
+            change={0}
+            progress={data.summary.upcomingEventsCount > 0 ? 100 : 0}
           />
           <StatCard
             title="Pending Revenue"
-            value="5,000"
+            value={formatCurrency(data.summary.pendingRevenue)}
             icon={BanknoteArrowDown}
-            change={-2}
-            progress={60}
+            change={0}
+            progress={data.summary.totalRevenue > 0 ? (data.summary.pendingRevenue / data.summary.totalRevenue) * 100 : 0}
           />
           <StatCard
             title="Total Revenue"
-            value="2,000"
+            value={formatCurrency(data.summary.totalRevenue)}
             icon={DollarSign}
-            change={8}
-            progress={85}
+            change={0}
+            progress={100}
           />
         </div>
 
@@ -52,48 +71,34 @@ export default function DashboardPage() {
           <ScheduleCard
             title="Today's Schedule"
             subtitle=""
-            items={[
-              {
-                id: "1",
-                time: "09:00 AM",
-                title: "Client Briefing: Aurora Soft",
-                subtitle: "Virtual Meeting • Room 4",
-                status: "IN_PROGRESS",
-                participants: ["R", "A"],
-              },
-              {
-                id: "2",
-                time: "11:30 AM",
-                title: "Venue Inspection: Glass House",
-                subtitle: "On-site • Downtown District",
-                status: "UPCOMING",
-              },
-              {
-                id: "3",
-                time: "01:30 PM",
-                title: "Venue Inspection: Glass House",
-                subtitle: "On-site • Downtown District",
-                status: "UPCOMING",
-              },
-              {
-                id: "4",
-                time: "02:00 PM",
-                title: "Vendor Selection Panel",
-                subtitle: "Conference Hall B",
-                status: "DRAFT",
-              },
-            ]}
+            items={data.todaySchedule.map((event) => ({
+              id: event._id,
+              time: event.startTime,
+              title: event.title,
+              subtitle: `${event.client?.name || "Client"} • ${event.venue?.name || "TBD"}`,
+              status: event.status === "Completed" ? "COMPLETED" : event.status === "Pending" ? "UPCOMING" : "IN_PROGRESS",
+            }))}
           />
 
           {/* Right */}
-          <FeaturedEventCard
-            badge="Flagship Event"
-            title="Big Wedding"
-            description="The premier gathering for industry innovators. Final logistics in progress for 500+ attendees."
-            date="Oct 12, 2026"
-            image="/images/tech-connect.jpg"
-            onDetails={() => console.log("Details")}
-          />
+          {data.upcomingEvents.length > 0 ? (
+            <FeaturedEventCard
+              badge="Upcoming Event"
+              title={data.upcomingEvents[0].title}
+              description={`Event for ${data.upcomingEvents[0].client?.name || "Client"} at ${data.upcomingEvents[0].venue?.name || "TBD"}.`}
+              date={format(new Date(data.upcomingEvents[0].eventDate), "MMM dd, yyyy")}
+              image="/images/tech-connect.jpg"
+              onDetails={() => { }}
+            />
+          ) : (
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm flex flex-col items-center justify-center text-center h-full min-h-[300px]">
+              <Calendar className="h-12 w-12 text-muted-foreground/30 mb-4" />
+              <h3 className="font-bold text-foreground">No Upcoming Events</h3>
+              <p className="text-sm text-muted-foreground mt-2 max-w-[250px]">
+                You don't have any upcoming events scheduled.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">

@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { serviceSchema } from "../schemas/service.schema";
 import { getService, createService, updateService } from "../api/service.api";
 
@@ -270,7 +270,7 @@ export default function ServiceDetailsPage() {
               <div className="flex items-center justify-between border-b pb-3">
                 <h2 className="font-bold text-lg text-foreground">Pricing Details</h2>
                 <span className="text-xs font-bold px-2 py-0.5 rounded bg-muted/60 text-muted-foreground border">
-                  USD ($)
+                  Base Currency
                 </span>
               </div>
 
@@ -292,10 +292,10 @@ export default function ServiceDetailsPage() {
                   <div className="space-y-2">
                     <Label htmlFor="price">
                       {watchPricingModel === "hourly"
-                        ? "Hourly Rate ($ / hr)"
+                        ? "Hourly Rate"
                         : watchPricingModel === "per_guest"
-                        ? "Price per Guest ($ / guest)"
-                        : "Flat Fee ($)"}
+                        ? "Price per Guest"
+                        : "Flat Fee"}
                     </Label>
                     <Input
                       id="price"
@@ -361,7 +361,7 @@ export default function ServiceDetailsPage() {
                             Completed
                           </span>
                         </td>
-                        <td className="p-3 text-right font-bold text-foreground">$22,750.00</td>
+                        <td className="p-3 text-right font-bold text-foreground">{formatCurrency(22750)}</td>
                       </tr>
                       <tr className="hover:bg-muted/20">
                         <td className="p-3 font-semibold text-foreground">Venture Summit '23</td>
@@ -373,7 +373,7 @@ export default function ServiceDetailsPage() {
                             Confirmed
                           </span>
                         </td>
-                        <td className="p-3 text-right font-bold text-foreground">$11,700.00</td>
+                        <td className="p-3 text-right font-bold text-foreground">{formatCurrency(11700)}</td>
                       </tr>
                       <tr className="hover:bg-muted/20">
                         <td className="p-3 font-semibold text-foreground">Product Launch: X1</td>
@@ -385,7 +385,7 @@ export default function ServiceDetailsPage() {
                             Pending
                           </span>
                         </td>
-                        <td className="p-3 text-right font-bold text-foreground">$35,500.00</td>
+                        <td className="p-3 text-right font-bold text-foreground">{formatCurrency(35500)}</td>
                       </tr>
                     </tbody>
                   </table>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { FileText, Calendar, Clock, MapPin, User, CheckCircle2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { formatCurrency } from "@/lib/utils";
 import api from "@/api/axios";
 
 const defaultServices = [
@@ -154,12 +155,12 @@ export function ReviewStep() {
                      <span className="text-muted-foreground">
                        {service.name} (x{service.quantity} {service.pricingModel === "hourly" ? "hrs" : service.pricingModel === "per_guest" ? "guests" : "qty"})
                      </span>
-                     <span className="font-medium text-foreground">${service.calculatedPrice.toFixed(2)}</span>
+                     <span className="font-medium text-foreground">{formatCurrency(service.calculatedPrice)}</span>
                    </div>
                 ))}
                 <div className="flex justify-between border-t pt-2 mt-2 font-bold text-foreground">
                   <span>Total Amount</span>
-                  <span className="text-primary">${totalAmount.toFixed(2)}</span>
+                  <span className="text-primary">{formatCurrency(totalAmount)}</span>
                 </div>
               </div>
             )}

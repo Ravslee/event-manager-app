@@ -23,15 +23,15 @@ export default function CalendarCell({
         onSelect(day.date);
       }}
       className={cn(
-        "group relative h-36 border border-l-0 border-t-0 bg-background p-3 transition-all hover:bg-primary/5",
+        "group relative h-24 border border-l-0 border-t-0 bg-background p-2 transition-all hover:bg-primary/5",
         !day.isCurrentMonth && "bg-muted/10",
-        selected && "ring-2 ring-primary",
+        selected && "ring-2 ring-primary ring-inset z-10",
       )}
     >
       <div className="flex justify-end">
         <div
           className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold",
+            "flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold",
 
             day.isToday && "bg-primary text-white",
 
@@ -42,8 +42,8 @@ export default function CalendarCell({
         </div>
       </div>
 
-      {/* Events will go here later */}
-      <div className="mt-3 space-y-1">
+      {/* Events */}
+      <div className="mt-1 space-y-1">
         {visibleEvents.map((event) => (
           <CalendarEvent key={event.id} event={event} />
         ))}

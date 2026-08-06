@@ -2,6 +2,8 @@ import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, LayoutGrid, List, SlidersHorizontal, ArrowUpDown, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn, formatCurrency } from "@/lib/utils";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import ServiceCard from "../components/ServiceCard";
 import { getServices, deleteService } from "../api/service.api";
@@ -137,35 +139,35 @@ export default function ServicesPage() {
       </div>
 
       {/* KPI Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Total Services */}
-        <div className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between h-28">
+        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             Total Services
           </span>
-          <span className="text-3xl font-extrabold text-foreground">{stats.total}</span>
+          <span className="text-2xl font-bold text-foreground">{stats.total}</span>
         </div>
 
         {/* Active Services */}
-        <div className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between h-28">
+        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Active
             </span>
           </div>
-          <span className="text-3xl font-extrabold text-foreground">{stats.active}</span>
+          <span className="text-2xl font-bold text-foreground">{stats.active}</span>
         </div>
 
         {/* Inactive Services */}
-        <div className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between h-28">
+        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-orange-500" />
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Inactive
             </span>
           </div>
-          <span className="text-3xl font-extrabold text-foreground">{stats.inactive}</span>
+          <span className="text-2xl font-bold text-foreground">{stats.inactive}</span>
         </div>
 
         {/* Revenue Potential (Styled Premium Purple Card) */}
@@ -178,7 +180,7 @@ export default function ServicesPage() {
               REVENUE POTENTIAL
             </span>
             <p className="text-2xl font-black mt-1">
-              ${stats.revenuePotential.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {formatCurrency(stats.revenuePotential)}
             </p>
           </div>
           <span className="text-[10px] font-semibold text-primary-foreground/90">

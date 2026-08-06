@@ -12,15 +12,18 @@ const EVENT_COLORS: any = {
 };
 
 export default function CalendarEvent({ event }: CalendarEventProps) {
+  const isHex = event.color?.startsWith("#");
+
   return (
     <div
       className={cn(
         "mb-1 flex items-center gap-2 rounded-sm px-2 py-1 text-xs font-medium text-white",
-        EVENT_COLORS[event.color],
+        !isHex && (EVENT_COLORS[event.color] || "bg-blue-500"),
         "cursor-pointer transition hover:opacity-90",
       )}
+      style={isHex ? { backgroundColor: event.color } : {}}
     >
-      <div className="h-2 w-2 rounded-full bg-white" />
+      <div className="h-2 w-2 rounded-full bg-white/50" />
 
       <span className="truncate">{event.title}</span>
     </div>

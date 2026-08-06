@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
-import { MapPin } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
-import api from "@/api/axios";
+import { cn, formatCurrency } from "@/lib/utils";
+import { getServices } from "@/features/services/api/service.api";
 import mapPreview from "@/assets/map_preview.png";
 
 const defaultServices = [
@@ -20,9 +20,8 @@ export function VenueServicesStep() {
   const [services, setServices] = useState<any[]>(defaultServices);
 
   useEffect(() => {
-    api.get("/services")
-      .then((res) => {
-        const list = res.data?.data?.services || [];
+    getServices()
+      .then((list) => {
         const activeList = list.filter((s: any) => s.isActive !== false);
         if (activeList.length > 0) {
           setServices(activeList);
@@ -115,11 +114,11 @@ export function VenueServicesStep() {
             // Format price string based on model
             let pricingLabel = "";
             if (service.pricingModel === "hourly") {
-              pricingLabel = `$${service.price} / hr`;
+              pricingLabel = `${formatCurrency(service.price)} / hr`;
             } else if (service.pricingModel === "per_guest") {
-              pricingLabel = `$${service.price} / guest`;
+              pricingLabel = `${formatCurrency(service.price)} / guest`;
             } else {
-              pricingLabel = `$${service.price} flat`;
+              pricingLabel = `${formatCurrency(service.price)} flat`;
             }
 
             return (
@@ -220,13 +219,10 @@ export function VenueServicesStep() {
         <div className="space-y-2">
           <Label>Total Amount</Label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium pointer-events-none">
-              $
-            </span>
             <Input
-              value={totalAmount.toFixed(2)}
+              value={formatCurrency(totalAmount)}
               disabled
-              className="h-10 pl-8 bg-muted/40 font-semibold text-foreground disabled:opacity-100"
+              className="h-10 bg-muted/40 font-semibold text-foreground disabled:opacity-100"
             />
           </div>
         </div>

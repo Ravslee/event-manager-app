@@ -143,28 +143,28 @@ export default function EventTypesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Total Event Types */}
-        <div className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between h-28">
+        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             Total Types
           </span>
-          <span className="text-3xl font-extrabold text-foreground">{stats.total}</span>
+          <span className="text-2xl font-bold text-foreground">{stats.total}</span>
         </div>
 
         {/* Active Types */}
-        <div className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between h-28">
+        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Active Types
             </span>
           </div>
-          <span className="text-3xl font-extrabold text-foreground">{stats.active}</span>
+          <span className="text-2xl font-bold text-foreground">{stats.active}</span>
         </div>
 
         {/* Default Type */}
-        <div className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between h-28">
+        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
           <div className="flex items-center gap-2 text-primary">
             <Star className="h-4 w-4 fill-current" />
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -238,9 +238,9 @@ export default function EventTypesPage() {
           {filteredAndSortedTypes.map((type) => (
             <div
               key={type._id}
-              className="flex flex-col justify-between rounded-2xl border border-border bg-card p-5 shadow-sm hover:shadow-md transition-all duration-200"
+              className="flex flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-sm hover:shadow-md transition-all duration-200"
             >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {/* Header Badge Row */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export default function EventTypesPage() {
               </div>
 
               {/* Action Buttons Row */}
-              <div className="flex items-center justify-end gap-2 border-t pt-4 mt-5">
+              <div className="flex items-center justify-end gap-2 border-t pt-3 mt-4">
                 <Button
                   variant="outline"
                   size="icon"

@@ -24,3 +24,8 @@ export const deleteEvent = async (id: string) => {
   const response = await api.delete(`/events/${id}`);
   return response.data;
 };
+
+export const getCalendar = async (params: { view: string; date?: string; month?: number; year?: number }) => {
+  const response = await api.get("/events/calendar", { params });
+  return response.data?.data || null;
+};

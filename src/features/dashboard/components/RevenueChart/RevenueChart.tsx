@@ -23,10 +23,10 @@ export default function RevenueChart({ chartData }: RevenueChartProps) {
   const data = view === "week" ? weekly : monthly;
 
   return (
-    <Card className="rounded-3xl">
-      <CardHeader className="flex flex-row items-start justify-between">
+    <Card className="rounded-xl">
+      <CardHeader className="flex flex-row items-start justify-between pb-4">
         <div>
-          <h3 className="text-xl font-semibold">Revenue Overview</h3>
+          <h3 className="text-lg font-semibold">Revenue Overview</h3>
 
           <p className="text-muted-foreground">Monthly performance tracking</p>
         </div>
@@ -45,7 +45,7 @@ export default function RevenueChart({ chartData }: RevenueChartProps) {
       </CardHeader>
 
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={200}>
           <AreaChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
 

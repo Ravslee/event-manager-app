@@ -2,6 +2,7 @@ import CalendarGrid from "../components/CalenderGrid/CalendarGrid";
 import CalendarHeader from "../components/CalenderHeader";
 import SelectedDayPanel from "../components/SelectedDayPanel";
 import useCalendar from "../hooks/useCalendar";
+import { isSameDay } from "date-fns";
 
 export default function CalendarPage() {
   const {
@@ -13,6 +14,8 @@ export default function CalendarPage() {
     goToPreviousMonth,
     goToToday,
   } = useCalendar();
+
+  const selectedDayEvents = days.find((day) => isSameDay(day.date, selectedDate))?.events || [];
 
   return (
     <div className="space-y-6">
@@ -30,7 +33,7 @@ export default function CalendarPage() {
           onSelect={setSelectedDate}
         />
 
-        <SelectedDayPanel selectedDate={selectedDate} />
+        <SelectedDayPanel selectedDate={selectedDate} events={selectedDayEvents} />
       </div>
     </div>
   );

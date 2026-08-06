@@ -1,6 +1,6 @@
 import { Edit2, Trash2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 interface ServiceCardProps {
   service: {
@@ -26,7 +26,7 @@ export default function ServiceCard({ service, onEdit, onDelete }: ServiceCardPr
   return (
     <div className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col h-full">
       {/* Visual Header Image */}
-      <div className="relative h-44 w-full bg-muted overflow-hidden">
+      <div className="relative h-32 w-full bg-muted overflow-hidden">
         <img
           src={imageSrc}
           alt={service.name}
@@ -60,7 +60,7 @@ export default function ServiceCard({ service, onEdit, onDelete }: ServiceCardPr
       </div>
 
       {/* Details Area */}
-      <div className="flex-1 p-5 flex flex-col">
+      <div className="flex-1 p-4 flex flex-col">
         {/* Category */}
         <div className="flex items-center gap-1.5 mb-2">
           <span
@@ -77,7 +77,7 @@ export default function ServiceCard({ service, onEdit, onDelete }: ServiceCardPr
             {service.name}
           </h3>
           <span className="text-sm font-extrabold text-primary shrink-0">
-            ${service.price}/{pricingText}
+            {formatCurrency(service.price)}/{pricingText}
           </span>
         </div>
 
@@ -87,7 +87,7 @@ export default function ServiceCard({ service, onEdit, onDelete }: ServiceCardPr
         </p>
 
         {/* Footer Area with Card Actions */}
-        <div className="border-t border-border pt-4 flex items-center justify-between mt-auto">
+        <div className="border-t border-border pt-3 flex items-center justify-between mt-auto">
           {/* Metadata */}
           <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
             <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />

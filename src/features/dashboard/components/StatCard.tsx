@@ -22,24 +22,24 @@ export default function StatCard({
 
   return (
     <Card className="rounded-3xl border-0 shadow-sm">
-      <CardContent className="space-y-8 p-8">
+      <CardContent className="space-y-4 p-5">
         {/* Top Row */}
         <div className="flex items-start justify-between">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10">
-            <Icon className="h-10 w-10 text-primary" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+            <Icon className="h-6 w-6 text-primary" />
           </div>
 
           {change !== undefined && (
             <div
               className={cn(
-                "flex items-center gap-1 text-xl font-semibold",
+                "flex items-center gap-1 text-sm font-semibold",
                 isPositive ? "text-green-600" : "text-red-500",
               )}
             >
               {isPositive ? (
-                <TrendingUp className="h-5 w-5" />
+                <TrendingUp className="h-4 w-4" />
               ) : (
-                <TrendingDown className="h-5 w-5" />
+                <TrendingDown className="h-4 w-4" />
               )}
               {Math.abs(change)}%
             </div>
@@ -48,9 +48,9 @@ export default function StatCard({
 
         {/* Title */}
         <div>
-          <p className="text-2xl font-medium text-muted-foreground">{title}</p>
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
 
-          <h2 className="mt-2 text-6xl font-bold tracking-tight">{value}</h2>
+          <h2 className="mt-1 text-3xl font-bold tracking-tight">{value}</h2>
         </div>
 
         <Progress value={progress} className="h-2 rounded-full" />
