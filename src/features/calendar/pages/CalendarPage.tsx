@@ -18,7 +18,7 @@ export default function CalendarPage() {
   const selectedDayEvents = days.find((day) => isSameDay(day.date, selectedDate))?.events || [];
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto max-w-7xl space-y-6 pb-8">
       <CalendarHeader
         monthTitle={monthTitle}
         onPrevious={goToPreviousMonth}
@@ -26,7 +26,7 @@ export default function CalendarPage() {
         onToday={goToToday}
       />
 
-      <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
+      <div className="grid gap-6 xl:grid-cols-[1fr_360px] items-start">
         <CalendarGrid
           days={days}
           selectedDate={selectedDate}

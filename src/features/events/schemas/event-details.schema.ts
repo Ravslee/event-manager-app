@@ -6,4 +6,5 @@ export const eventDetailsSchema = z.object({
   eventDate: z.string().min(1, "Date is required"),
   startTime: z.string().min(1, "Start time is required"),
   endTime: z.string().min(1, "End time is required"),
+  status: z.enum(["Confirmed", "Pending", "Completed", "Cancelled"]).optional(),
 });

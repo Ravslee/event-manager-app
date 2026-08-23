@@ -7,13 +7,13 @@ const WizardHeader: FC<WizardHeaderProps> = ({
   description,
 }) => {
   return (
-    <div className="space-y-2">
-      <h1 className="text-3xl font-bold tracking-tight">
+    <div className="space-y-0.5 sm:space-y-1">
+      <h1 className="text-base sm:text-2xl font-extrabold tracking-tight text-foreground">
         {title}
       </h1>
 
       {description && (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-[11px] sm:text-xs text-muted-foreground leading-snug">
           {description}
         </p>
       )}

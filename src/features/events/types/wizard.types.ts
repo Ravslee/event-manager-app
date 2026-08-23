@@ -26,10 +26,12 @@ export interface WizardFooterProps {
   isLastStep: boolean;
   currentStep: number;
   totalSteps: number;
+  isEditing?: boolean;
   onNext: () => void;
   onPrevious: () => void;
   onDiscard?: () => void;
   onSaveDraft?: () => void;
+  onUpdate?: () => void;
 }
 
 export interface WizardContentProps {

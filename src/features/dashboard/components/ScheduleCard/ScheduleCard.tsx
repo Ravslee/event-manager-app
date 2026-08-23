@@ -1,7 +1,6 @@
-import { ArrowRight } from "lucide-react";
-
+import { ArrowRight, CalendarOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-
 import ScheduleItemRow from "./ScheduleItem";
 import { type ScheduleCardProps } from "./types";
 
@@ -10,24 +9,42 @@ export default function ScheduleCard({
   subtitle,
   items,
 }: ScheduleCardProps) {
-  return (
-    <Card className="overflow-hidden rounded-xl">
-      <div className="flex items-center justify-between p-4">
-        <div>
-          <h2 className="text-xl font-bold">{title}</h2>
+  const navigate = useNavigate();
 
-          <p className="text-muted-foreground">{subtitle}</p>
+  return (
+    <Card className="overflow-hidden rounded-2xl border border-border shadow-xs">
+      <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border/60 bg-card">
+        <div>
+          <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-foreground">{title}</h2>
+          {subtitle && <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{subtitle}</p>}
         </div>
 
-        <button className="flex items-center gap-2 font-medium text-violet-700">
+        <button
+          onClick={() => navigate("/calendar")}
+          className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:underline cursor-pointer transition-colors"
+        >
           View Calendar
           <ArrowRight className="h-4 w-4" />
         </button>
       </div>
 
-      {items.map((item) => (
-        <ScheduleItemRow key={item.id} item={item} />
-      ))}
+      {items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center bg-card/40">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-3">
+            <CalendarOff className="h-6 w-6" />
+          </div>
+          <p className="text-sm font-extrabold text-foreground">No events scheduled for today</p>
+          <p className="text-xs text-muted-foreground mt-1 max-w-[280px]">
+            You have no events on today's schedule. Click View Calendar to check upcoming dates.
+          </p>
+        </div>
+      ) : (
+        <div className="divide-y divide-border/60">
+          {items.map((item) => (
+            <ScheduleItemRow key={item.id} item={item} />
+          ))}
+        </div>
+      )}
     </Card>
   );
 }

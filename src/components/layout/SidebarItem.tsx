@@ -17,15 +17,18 @@ export function SidebarItem({
   return (
     <NavLink
       to={to}
+      title={collapsed ? title : undefined}
       className={({ isActive }) =>
-        `flex items-center rounded-xl px-3 py-3 text-sm font-medium transition-colors ${
-          isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted"
-        } ${collapsed ? "justify-center" : "gap-3"}`
+        `flex items-center rounded-xl py-2.5 text-sm font-medium transition-all ${
+          isActive
+            ? "bg-primary text-primary-foreground font-bold shadow-sm"
+            : "text-muted-foreground hover:text-foreground hover:bg-accent/60"
+        } ${collapsed ? "justify-center px-1.5 sm:px-2" : "gap-3 px-3"}`
       }
     >
-      <Icon size={18} />
+      <Icon className="h-4.5 w-4.5 shrink-0" />
 
-      {!collapsed && title}
+      {!collapsed && <span className="truncate">{title}</span>}
     </NavLink>
   );
 }

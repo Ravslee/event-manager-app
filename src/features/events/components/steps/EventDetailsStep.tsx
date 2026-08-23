@@ -51,7 +51,7 @@ export function EventDetailsStep() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="eventTypeId">Event Type</Label>
             <select
@@ -86,6 +86,21 @@ export function EventDetailsStep() {
             {errors.eventDate && (
               <p className="text-xs text-destructive">{errors.eventDate.message as string}</p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="status">Status</Label>
+            <select
+              id="status"
+              className="h-10 w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 md:text-sm dark:bg-input/30"
+              {...register("status")}
+              defaultValue="Confirmed"
+            >
+              <option value="Confirmed">Confirmed</option>
+              <option value="Pending">Pending (Draft)</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
           </div>
         </div>
 

@@ -35,7 +35,7 @@ export default function DashboardPage() {
   return (
     <>
       <div className="space-y-6">
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 md:gap-6 grid-cols-2 xl:grid-cols-4">
           <StatCard
             title="Today's Events"
             value={data.summary.todayEventsCount}

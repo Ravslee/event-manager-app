@@ -1,13 +1,10 @@
 import {
   ChevronLeft,
   ChevronRight,
-  Search,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import type { CalendarHeaderProps } from "./CalendarHeader.types";
-
 
 export default function CalendarHeader({
   monthTitle,
@@ -16,15 +13,15 @@ export default function CalendarHeader({
   onToday,
 }: CalendarHeaderProps) {
   return (
-    <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-
-      {/* Left Section */}
-      <div className="flex items-center gap-3">
-
+    <div className="flex items-center justify-between gap-3 bg-card border border-border p-3 sm:p-4 rounded-2xl shadow-xs">
+      {/* Navigation & Month Title */}
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
         <Button
           variant="outline"
           size="icon"
           onClick={onPrevious}
+          className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl shrink-0"
+          title="Previous Month"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -33,35 +30,25 @@ export default function CalendarHeader({
           variant="outline"
           size="icon"
           onClick={onNext}
+          className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl shrink-0"
+          title="Next Month"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
 
         <Button
           variant="secondary"
+          size="sm"
           onClick={onToday}
+          className="h-8 sm:h-9 px-2.5 sm:px-3 text-xs sm:text-sm font-bold rounded-xl shrink-0"
         >
           Today
         </Button>
 
-        <h2 className="ml-4 text-2xl font-bold">
+        <h2 className="ml-2 sm:ml-3 text-base sm:text-xl font-extrabold text-foreground tracking-tight truncate">
           {monthTitle}
         </h2>
-
       </div>
-
-      {/* Right Section */}
-      <div className="relative w-full lg:w-80">
-
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-
-        <Input
-          placeholder="Search events..."
-          className="pl-10"
-        />
-
-      </div>
-
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, LayoutGrid, List, SlidersHorizontal, ArrowUpDown, DollarSign } from "lucide-react";
+import { Plus, LayoutGrid, List, SlidersHorizontal, ArrowUpDown, DollarSign, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn, formatCurrency } from "@/lib/utils";
@@ -115,7 +115,7 @@ export default function ServicesPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-7xl space-y-6">
+    <div className="container mx-auto max-w-7xl space-y-6 pb-8">
       {/* Breadcrumb & Header Row */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="space-y-1">
@@ -139,39 +139,40 @@ export default function ServicesPage() {
       </div>
 
       {/* KPI Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
         {/* Total Services */}
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
+          <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
             Total Services
           </span>
-          <span className="text-2xl font-bold text-foreground">{stats.total}</span>
+          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.total}</span>
         </div>
 
         {/* Active Services */}
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
               Active
             </span>
           </div>
-          <span className="text-2xl font-bold text-foreground">{stats.active}</span>
+          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.active}</span>
         </div>
 
         {/* Inactive Services */}
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-orange-500" />
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="h-2 w-2 rounded-full bg-orange-500 shrink-0" />
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
               Inactive
             </span>
           </div>
-          <span className="text-2xl font-bold text-foreground">{stats.inactive}</span>
+          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.inactive}</span>
         </div>
+      </div>
 
-        {/* Revenue Potential (Styled Premium Purple Card) */}
-        {/* <div className="bg-primary text-primary-foreground p-5 rounded-2xl shadow-md flex flex-col justify-between h-28 relative overflow-hidden group">
+      {/* Revenue Potential (Styled Premium Purple Card) */}
+      {/* <div className="bg-primary text-primary-foreground p-5 rounded-2xl shadow-md flex flex-col justify-between h-28 relative overflow-hidden group">
           <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-300">
             <DollarSign className="size-24" />
           </div>
@@ -187,7 +188,6 @@ export default function ServicesPage() {
             +12% from last month
           </span>
         </div> */}
-      </div>
 
       {/* Filter and Control Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-border bg-card p-3 rounded-2xl gap-3 shadow-sm">
@@ -268,7 +268,7 @@ export default function ServicesPage() {
             Create a Service
           </Button>
         </div>
-      ) : (
+      ) : viewMode === "grid" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAndSortedServices.map((service) => (
             <ServiceCard
@@ -278,6 +278,105 @@ export default function ServicesPage() {
               onDelete={handleOpenDeleteConfirm}
             />
           ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-border bg-card divide-y divide-border/60 overflow-hidden shadow-sm">
+          {filteredAndSortedServices.map((service) => {
+            const imageSrc = service.image || "/services/default.png";
+            const pricingText =
+              service.pricingModel === "flat"
+                ? "flat"
+                : service.pricingModel === "per_guest"
+                  ? "per guest"
+                  : "hr";
+
+            return (
+              <div
+                key={service._id}
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4 hover:bg-muted/20 transition-colors duration-150"
+              >
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="relative h-12 w-12 rounded-xl bg-muted overflow-hidden shrink-0 border">
+                    <img
+                      src={imageSrc}
+                      alt={service.name}
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = `https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800`;
+                      }}
+                    />
+                    <div
+                      className="absolute bottom-0 left-0 right-0 h-1"
+                      style={{ backgroundColor: service.color }}
+                    />
+                  </div>
+
+                  <div className="space-y-1 min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-bold text-foreground text-sm tracking-tight truncate">
+                        {service.name}
+                      </h3>
+                      <span
+                        className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded shrink-0"
+                        style={{ backgroundColor: `${service.color}15`, color: service.color }}
+                      >
+                        {service.category}
+                      </span>
+                    </div>
+                    {service.description && (
+                      <p className="text-xs text-muted-foreground truncate max-w-xl">
+                        {service.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 justify-between sm:justify-end shrink-0 pl-16 sm:pl-0">
+                  <span className="text-sm font-extrabold text-primary shrink-0 min-w-[90px] text-right">
+                    {formatCurrency(service.price)}/{pricingText}
+                  </span>
+
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm",
+                      service.isActive
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                        : "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "h-1.5 w-1.5 rounded-full",
+                        service.isActive ? "bg-emerald-500" : "bg-orange-500"
+                      )}
+                    />
+                    {service.isActive ? "Active" : "Inactive"}
+                  </span>
+
+
+
+                  <div className="flex items-center gap-1">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => handleOpenEditForm(service)}
+                      className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted"
+                    >
+                      <Edit2 className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => handleOpenDeleteConfirm(service._id)}
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/5"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 

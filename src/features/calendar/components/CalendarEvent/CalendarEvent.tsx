@@ -17,14 +17,13 @@ export default function CalendarEvent({ event }: CalendarEventProps) {
   return (
     <div
       className={cn(
-        "mb-1 flex items-center gap-2 rounded-sm px-2 py-1 text-xs font-medium text-white",
+        "mb-0.5 flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-[10px] sm:text-xs font-semibold text-white truncate shadow-2xs",
         !isHex && (EVENT_COLORS[event.color] || "bg-blue-500"),
         "cursor-pointer transition hover:opacity-90",
       )}
       style={isHex ? { backgroundColor: event.color } : {}}
     >
-      <div className="h-2 w-2 rounded-full bg-white/50" />
-
+      <div className="h-1.5 w-1.5 rounded-full bg-white/70 shrink-0" />
       <span className="truncate">{event.title}</span>
     </div>
   );

@@ -23,6 +23,7 @@ const eventMasterSchema = z.object({
   eventDate: eventDetailsSchema.shape.eventDate,
   startTime: eventDetailsSchema.shape.startTime,
   endTime: eventDetailsSchema.shape.endTime,
+  status: eventDetailsSchema.shape.status,
   client: clientInformationSchema.shape.client,
   venue: venueServicesSchema.shape.venue,
   services: venueServicesSchema.shape.services,
@@ -46,6 +47,7 @@ const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => 
       eventDate: "",
       startTime: "",
       endTime: "",
+      status: "Confirmed",
       client: {
         name: "",
         email: "",
@@ -117,6 +119,7 @@ const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => 
               eventDate: eventDateStr,
               startTime: event.startTime || "",
               endTime: event.endTime || "",
+              status: event.status || "Confirmed",
               client: {
                 name: event.client?.name || "",
                 email: event.client?.email || "",
@@ -169,6 +172,17 @@ const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => 
     )();
   };
 
+  const handleDirectUpdate = async () => {
+    const fieldsToValidate = stepFields[currentStep];
+    const isValid = await methods.trigger(fieldsToValidate as any);
+    if (isValid) {
+      await methods.handleSubmit(
+        (data) => onSubmit(data, data.status || "Confirmed"),
+        (errors) => console.error("Validation errors on Direct Update:", errors)
+      )();
+    }
+  };
+
   const handleDiscard = () => {
     methods.reset();
     goToStep(1);
@@ -177,7 +191,7 @@ const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => 
     }
   };
 
-  const onSubmit = async (data: any, status: "Confirmed" | "Pending") => {
+  const onSubmit = async (data: any, defaultStatus: "Confirmed" | "Pending") => {
     try {
       const bookedServices = Object.entries(data.services)
         .filter(([_, value]: any) => value?.checked)
@@ -211,7 +225,7 @@ const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => 
         },
         bookedServices,
         notes: data.notes || "",
-        status,
+        status: data.status || defaultStatus,
         isActive: true,
       };
 
@@ -234,7 +248,7 @@ const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => 
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col gap-6 rounded-xl border bg-background p-6 shadow-sm">
+      <div className="flex flex-col h-auto min-h-full gap-4 rounded-xl border bg-background p-4 md:p-5 shadow-sm">
         <WizardHeader
           title={eventId ? "Edit Event" : "Create New Event"}
           description={eventId ? "Modify the event details and booked services." : "Fill in the details to schedule a new creative production or client meeting."}
@@ -251,10 +265,12 @@ const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => 
           totalSteps={steps.length}
           isFirstStep={isFirstStep}
           isLastStep={isLastStep}
+          isEditing={!!eventId}
           onNext={handleNext}
           onPrevious={previousStep}
           onDiscard={handleDiscard}
           onSaveDraft={handleSaveDraft}
+          onUpdate={handleDirectUpdate}
         />
       </div>
     </FormProvider>

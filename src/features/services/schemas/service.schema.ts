@@ -8,7 +8,7 @@ export const serviceSchema = z.object({
   pricingModel: z.string().default("hourly"),
   color: z.string().default("#6366F1"),
   image: z.string().optional().default(""),
-  status: z.string().default("Active"),
+  isActive: z.boolean().optional().default(true),
   minCapacity: z.coerce.number().min(0).optional().default(0),
 });
 

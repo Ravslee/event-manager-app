@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Plus, Search, Trash2, Edit2, Star, SlidersHorizontal } from "lucide-react";
+import { Plus, Search, Trash2, Edit2, Star, SlidersHorizontal, LayoutGrid, List } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ export default function EventTypesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("default");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Edit/Create Dialog State
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -116,7 +117,7 @@ export default function EventTypesPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-7xl space-y-6">
+    <div className="container mx-auto max-w-7xl space-y-6 pb-8">
       {/* Header Row */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="space-y-1">
@@ -143,35 +144,35 @@ export default function EventTypesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
         {/* Total Event Types */}
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
+          <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
             Total Types
           </span>
-          <span className="text-2xl font-bold text-foreground">{stats.total}</span>
+          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.total}</span>
         </div>
 
         {/* Active Types */}
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
               Active Types
             </span>
           </div>
-          <span className="text-2xl font-bold text-foreground">{stats.active}</span>
+          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.active}</span>
         </div>
 
         {/* Default Type */}
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col justify-between h-24">
-          <div className="flex items-center gap-2 text-primary">
-            <Star className="h-4 w-4 fill-current" />
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
+          <div className="flex items-center gap-1.5 text-primary min-w-0">
+            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current shrink-0" />
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
               Default Type
             </span>
           </div>
-          <span className="text-lg font-bold text-foreground truncate">{stats.defaultType}</span>
+          <span className="text-sm sm:text-lg font-bold text-foreground truncate mt-0.5">{stats.defaultType}</span>
         </div>
       </div>
 
@@ -188,7 +189,7 @@ export default function EventTypesPage() {
           />
         </div>
 
-        {/* Filters & Sort */}
+        {/* Filters, Sort & Layout Switcher */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer border">
             <SlidersHorizontal className="h-4 w-4" />
@@ -215,10 +216,30 @@ export default function EventTypesPage() {
               <option value="default-first">Default First</option>
             </select>
           </div>
+
+          {/* Layout Mode Switcher */}
+          <div className="flex items-center gap-1 border-l border-border pl-3">
+            <Button
+              size="icon"
+              variant={viewMode === "grid" ? "secondary" : "ghost"}
+              onClick={() => setViewMode("grid")}
+              className="h-8 w-8 rounded-lg"
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant={viewMode === "list" ? "secondary" : "ghost"}
+              onClick={() => setViewMode("list")}
+              className="h-8 w-8 rounded-lg"
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Event Types Grid */}
+      {/* Event Types Display */}
       {isLoading ? (
         <div className="flex h-64 items-center justify-center">
           <span className="text-sm text-muted-foreground">Loading event types...</span>
@@ -233,7 +254,7 @@ export default function EventTypesPage() {
             Try adjusting your search queries or add your very first custom Event Type configuration.
           </p>
         </div>
-      ) : (
+      ) : viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAndSortedTypes.map((type) => (
             <div
@@ -297,6 +318,75 @@ export default function EventTypesPage() {
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-border bg-card divide-y divide-border/60 overflow-hidden shadow-sm">
+          {filteredAndSortedTypes.map((type) => (
+            <div
+              key={type._id}
+              className="flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4 hover:bg-muted/20 transition-colors duration-150"
+            >
+              <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                <span
+                  className="size-4.5 rounded-full border shadow-inner shrink-0"
+                  style={{ backgroundColor: type.color }}
+                />
+                <div className="space-y-0.5 min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-foreground text-sm tracking-tight truncate">
+                      {type.name}
+                    </h3>
+                  </div>
+                  {type.description && (
+                    <p className="text-xs text-muted-foreground truncate max-w-xl">
+                      {type.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 justify-between sm:justify-end shrink-0 pl-8 sm:pl-0">
+                {type.isDefault && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+                    <Star className="h-2.5 w-2.5 fill-current" />
+                    DEFAULT
+                  </span>
+                )}
+
+                <span
+                  className={cn(
+                    "inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold",
+                    type.isActive
+                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                      : "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20"
+                  )}
+                >
+                  {type.isActive ? "Active" : "Inactive"}
+                </span>
+
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleOpenEdit(type._id)}
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted"
+                    title="Edit Type"
+                  >
+                    <Edit2 className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleOpenDelete(type._id)}
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/5"
+                    title="Delete Type"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
             </div>
           ))}

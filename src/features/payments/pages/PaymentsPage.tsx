@@ -35,7 +35,7 @@ export default function PaymentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -75,13 +75,13 @@ export default function PaymentsPage() {
 
     payments.forEach((p) => {
       totalRevenue += p.paidAmount;
-      
+
       const due = p.totalAmount - p.paidAmount;
-      
+
       if (due > 0 && (p.status === "Pending" || p.status === "Partial")) {
         pendingAmount += due;
         pendingCount += 1;
-        
+
         if (p.eventId?.eventDate && isPast(new Date(p.eventId.eventDate)) && !isToday(new Date(p.eventId.eventDate))) {
           overdueAmount += due;
         }
@@ -132,29 +132,33 @@ export default function PaymentsPage() {
   };
 
   return (
-    <div className="space-y-6 container mx-auto pb-10">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Payments</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+    <div className="container mx-auto max-w-7xl space-y-6 pb-8">
+      {/* Breadcrumb & Header Row */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
+            <span>Finance</span>
+            <span>/</span>
+            <span className="text-foreground">Payments</span>
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+            Payments
+          </h1>
+          <p className="text-sm text-muted-foreground">
             Manage transactions, invoices, and track revenue.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" className="h-9 text-xs">
-            <Download className="mr-2 h-4 w-4" />
+
+        <div className="flex items-center gap-2 self-start md:self-auto">
+          <Button variant="outline" className="h-10 px-4 text-xs rounded-xl gap-1.5">
+            <Download className="h-4 w-4" />
             Export CSV
-          </Button>
-          <Button onClick={() => navigate("/events")} className="h-9 text-xs">
-            <Plus className="mr-2 h-4 w-4" />
-            New Event
           </Button>
         </div>
       </div>
 
       {/* Stats Row */}
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
+      <div className="grid gap-3 md:gap-6 grid-cols-2 md:grid-cols-3">
         <StatCard
           title="TOTAL REVENUE"
           value={formatCurrency(stats.totalRevenue)}
@@ -184,7 +188,7 @@ export default function PaymentsPage() {
           <Card className="rounded-2xl shadow-sm">
             <CardHeader className="pb-3 border-b flex flex-row items-center justify-between">
               <CardTitle className="text-lg">Recent Transactions</CardTitle>
-              
+
               {/* Search & Filters */}
               <div className="flex items-center gap-2">
                 <div className="relative">
@@ -239,8 +243,8 @@ export default function PaymentsPage() {
                       </tr>
                     ) : (
                       paginatedPayments.map((payment) => (
-                        <tr 
-                          key={payment._id} 
+                        <tr
+                          key={payment._id}
                           className="hover:bg-muted/10 transition-colors cursor-pointer"
                           onClick={() => navigate(`/payments/${payment.eventId._id}`)}
                         >
@@ -270,8 +274,8 @@ export default function PaymentsPage() {
                             {formatCurrency(payment.totalAmount)}
                           </td>
                           <td className="px-6 py-4 text-muted-foreground text-xs">
-                            {payment.eventId?.eventDate 
-                              ? format(new Date(payment.eventId.eventDate), "MMM d, yyyy") 
+                            {payment.eventId?.eventDate
+                              ? format(new Date(payment.eventId.eventDate), "MMM d, yyyy")
                               : "N/A"}
                           </td>
                           <td className="px-6 py-4">
@@ -283,9 +287,9 @@ export default function PaymentsPage() {
                             </span>
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <Button 
-                              variant="ghost" 
-                              size="icon" 
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               className="h-8 w-8"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -301,7 +305,7 @@ export default function PaymentsPage() {
                   </tbody>
                 </table>
               </div>
-              
+
               {/* Pagination Footer */}
               {!isLoading && filteredPayments.length > 0 && (
                 <div className="border-t p-4 flex items-center justify-between bg-muted/10 text-xs text-muted-foreground rounded-b-2xl">
@@ -309,18 +313,18 @@ export default function PaymentsPage() {
                     Showing {Math.min((currentPage - 1) * itemsPerPage + 1, filteredPayments.length)} to {Math.min(currentPage * itemsPerPage, filteredPayments.length)} of {filteredPayments.length} transactions
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="h-8"
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage(p => p - 1)}
                     >
                       Previous
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="h-8"
                       disabled={currentPage === totalPages}
                       onClick={() => setCurrentPage(p => p + 1)}
@@ -337,7 +341,7 @@ export default function PaymentsPage() {
         {/* Right Sidebar Area */}
         <div className="space-y-6">
           <RevenueChart chartData={{ weekly: weeklyData, monthly: monthlyData }} />
-          
+
           <Card className="rounded-2xl shadow-sm border-dashed">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Pending Actions</CardTitle>

@@ -28,7 +28,7 @@ import {
   SheetDescription 
 } from "@/components/ui/sheet";
 import { cn, formatCurrency } from "@/lib/utils";
-import { getEvents, deleteEvent } from "../api/event.api";
+import { getEvents, deleteEvent, updateEvent } from "../api/event.api";
 import { getEventTypes } from "@/features/event-types/api/event-type.api";
 import { EventWizard } from "../components/wizard";
 
@@ -50,6 +50,18 @@ export default function EventsPage() {
   // Delete Dialog state
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<string | null>(null);
+
+  const handleStatusChange = async (eventId: string, newStatus: string) => {
+    try {
+      await updateEvent(eventId, { status: newStatus });
+      if (selectedEvent && selectedEvent._id === eventId) {
+        setSelectedEvent((prev: any) => ({ ...prev, status: newStatus }));
+      }
+      fetchEventsData();
+    } catch (error) {
+      console.error("Failed to update status", error);
+    }
+  };
 
   const fetchEventsData = () => {
     setIsLoading(true);
@@ -167,83 +179,93 @@ export default function EventsPage() {
 
   if (view === "create") {
     return (
-      <div className="container mx-auto py-6 max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-300">
-        <div className="mb-4">
+      <div className="container mx-auto max-w-4xl h-[calc(100vh-112px)] flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="mb-2 shrink-0">
           <Button 
             variant="outline" 
             onClick={() => {
               setView("list");
               setEditingEventId(null);
             }}
-            className="text-xs h-8"
+            className="text-xs h-7 px-2.5"
           >
             ← Back to Events List
           </Button>
         </div>
-        <EventWizard 
-          eventId={editingEventId || undefined}
-          onSuccess={() => {
-            setView("list");
-            setEditingEventId(null);
-            fetchEventsData();
-          }}
-          onCancel={() => {
-            setView("list");
-            setEditingEventId(null);
-          }}
-        />
+        <div className="flex-1 min-h-0">
+          <EventWizard 
+            eventId={editingEventId || undefined}
+            onSuccess={() => {
+              setView("list");
+              setEditingEventId(null);
+              fetchEventsData();
+            }}
+            onCancel={() => {
+              setView("list");
+              setEditingEventId(null);
+            }}
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Events Manager</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+    <div className="container mx-auto max-w-7xl space-y-6 pb-8">
+      {/* Breadcrumb & Header Row */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
+            <span>Management</span>
+            <span>/</span>
+            <span className="text-foreground">Events</span>
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+            Events Manager
+          </h1>
+          <p className="text-sm text-muted-foreground">
             Track, configure, and manage upcoming and past production events.
           </p>
         </div>
-        <Button 
+
+        <Button
           onClick={() => setView("create")}
-          className="h-10 px-4 bg-primary text-primary-foreground hover:bg-primary/95 flex items-center gap-2 self-start sm:self-center shadow-sm"
+          className="h-10 px-5 gap-1.5 self-start md:self-auto bg-primary text-primary-foreground hover:bg-primary/95 shadow-sm rounded-xl"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4.5 w-4.5" />
           Create Event
         </Button>
       </div>
 
       {/* Stats Section */}
-      <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
-        <div className="rounded-xl border bg-card p-3 text-card-foreground shadow-sm">
-          <div className="flex items-center justify-between space-y-0 pb-1">
-            <span className="text-xs font-medium text-muted-foreground">Total Events</span>
-            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+      <div className="grid gap-2.5 sm:gap-3 grid-cols-2 md:grid-cols-4">
+        <div className="rounded-xl border border-border bg-card p-2.5 sm:p-4 text-card-foreground shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between space-y-0 pb-1 gap-1">
+            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">Total Events</span>
+            <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground shrink-0" />
           </div>
-          <div className="text-xl font-bold">{stats.total}</div>
+          <div className="text-base sm:text-2xl font-extrabold tracking-tight mt-0.5">{stats.total}</div>
         </div>
-        <div className="rounded-xl border bg-card p-3 text-card-foreground shadow-sm">
-          <div className="flex items-center justify-between space-y-0 pb-1">
-            <span className="text-xs font-medium text-muted-foreground">Confirmed</span>
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+        <div className="rounded-xl border border-border bg-card p-2.5 sm:p-4 text-card-foreground shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between space-y-0 pb-1 gap-1">
+            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">Confirmed</span>
+            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
           </div>
-          <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{stats.confirmed}</div>
+          <div className="text-base sm:text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 mt-0.5">{stats.confirmed}</div>
         </div>
-        <div className="rounded-xl border bg-card p-3 text-card-foreground shadow-sm">
-          <div className="flex items-center justify-between space-y-0 pb-1">
-            <span className="text-xs font-medium text-muted-foreground">Pending</span>
-            <span className="h-2 w-2 rounded-full bg-amber-500" />
+        <div className="rounded-xl border border-border bg-card p-2.5 sm:p-4 text-card-foreground shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between space-y-0 pb-1 gap-1">
+            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">Pending</span>
+            <span className="h-2 w-2 rounded-full bg-amber-500 shrink-0" />
           </div>
-          <div className="text-xl font-bold text-amber-600 dark:text-amber-400">{stats.pending}</div>
+          <div className="text-base sm:text-2xl font-extrabold tracking-tight text-amber-600 dark:text-amber-400 mt-0.5">{stats.pending}</div>
         </div>
-        <div className="rounded-xl border bg-card p-3 text-card-foreground shadow-sm">
-          <div className="flex items-center justify-between space-y-0 pb-1">
-            <span className="text-xs font-medium text-muted-foreground">Completed</span>
-            <span className="h-2 w-2 rounded-full bg-blue-500" />
+        <div className="rounded-xl border border-border bg-card p-2.5 sm:p-4 text-card-foreground shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between space-y-0 pb-1 gap-1">
+            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">Completed</span>
+            <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0" />
           </div>
-          <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{stats.completed}</div>
+          <div className="text-base sm:text-2xl font-extrabold tracking-tight text-blue-600 dark:text-blue-400 mt-0.5">{stats.completed}</div>
         </div>
       </div>
 
@@ -439,12 +461,19 @@ export default function EventsPage() {
             <div className="h-full flex flex-col space-y-6 pr-1">
               <SheetHeader className="p-0 border-b border-border pb-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={cn(
-                    "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold",
-                    getStatusBadgeClass(selectedEvent.status)
-                  )}>
-                    {selectedEvent.status}
-                  </span>
+                  <select
+                    value={selectedEvent.status}
+                    onChange={(e) => handleStatusChange(selectedEvent._id, e.target.value)}
+                    className={cn(
+                      "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold cursor-pointer outline-none transition-colors",
+                      getStatusBadgeClass(selectedEvent.status)
+                    )}
+                  >
+                    <option value="Confirmed" className="bg-background text-foreground">Confirmed</option>
+                    <option value="Pending" className="bg-background text-foreground">Pending</option>
+                    <option value="Completed" className="bg-background text-foreground">Completed</option>
+                    <option value="Cancelled" className="bg-background text-foreground">Cancelled</option>
+                  </select>
                   <span
                     className="inline-block text-xs font-medium px-2.5 py-0.5 rounded-md"
                     style={{

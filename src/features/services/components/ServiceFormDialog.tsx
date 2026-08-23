@@ -68,7 +68,7 @@ export default function ServiceFormDialog({
       pricingModel: "hourly",
       color: "#6366F1",
       image: "",
-      status: "Active",
+      isActive: true,
     },
   });
 
@@ -86,7 +86,7 @@ export default function ServiceFormDialog({
           pricingModel: service.pricingModel || "hourly",
           color: service.color || "#6366F1",
           image: service.image || "",
-          status: service.status || "Active",
+          isActive: service.isActive || true,
         });
       } else {
         reset({
@@ -97,7 +97,7 @@ export default function ServiceFormDialog({
           pricingModel: "hourly",
           color: "#6366F1",
           image: "",
-          status: "Active",
+          isActive: true,
         });
       }
     }

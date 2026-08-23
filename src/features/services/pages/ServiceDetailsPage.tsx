@@ -64,13 +64,13 @@ export default function ServiceDetailsPage() {
       pricingModel: "hourly",
       color: "#6366F1",
       image: "",
-      status: "Active",
+      isActive: true,
       minCapacity: 0,
     },
   });
 
   const watchName = watch("name") || (isNew ? "New Service" : "Service Details");
-  const watchStatus = watch("status");
+  const watchIsActive = watch("isActive");
   const watchImage = watch("image");
   const watchColor = watch("color");
   const watchPricingModel = watch("pricingModel");
@@ -89,7 +89,7 @@ export default function ServiceDetailsPage() {
               pricingModel: service.pricingModel || "hourly",
               color: service.color || "#6366F1",
               image: service.image || "",
-              status: service.status || "Active",
+              isActive: service.isActive || true,
               minCapacity: service.minCapacity || 0,
             });
           }
@@ -169,12 +169,12 @@ export default function ServiceDetailsPage() {
               <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
                 {watchName}
               </h1>
-              <span className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/5 px-2.5 py-0.5 text-xs font-semibold text-primary">
+              {/* <span className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/5 px-2.5 py-0.5 text-xs font-semibold text-primary">
                 PREMIUM SERVICE
               </span>
               <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/40 px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
                 🌐 Public Catalog
-              </span>
+              </span> */}
             </div>
           </div>
 
@@ -294,8 +294,8 @@ export default function ServiceDetailsPage() {
                       {watchPricingModel === "hourly"
                         ? "Hourly Rate"
                         : watchPricingModel === "per_guest"
-                        ? "Price per Guest"
-                        : "Flat Fee"}
+                          ? "Price per Guest"
+                          : "Flat Fee"}
                     </Label>
                     <Input
                       id="price"
@@ -305,8 +305,8 @@ export default function ServiceDetailsPage() {
                         watchPricingModel === "hourly"
                           ? "150.00"
                           : watchPricingModel === "per_guest"
-                          ? "85.00"
-                          : "1500.00"
+                            ? "85.00"
+                            : "1500.00"
                       }
                       className="h-10"
                       {...register("price")}
@@ -406,16 +406,16 @@ export default function ServiceDetailsPage() {
                 <span className="text-sm font-semibold text-foreground">Active Status</span>
                 <button
                   type="button"
-                  onClick={() => setValue("status", watchStatus === "Active" ? "Inactive" : "Active")}
+                  onClick={() => setValue("isActive", !watchIsActive)}
                   className={cn(
                     "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out outline-none",
-                    watchStatus === "Active" ? "bg-primary" : "bg-muted"
+                    watchIsActive ? "bg-primary" : "bg-muted"
                   )}
                 >
                   <span
                     className={cn(
                       "pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out",
-                      watchStatus === "Active" ? "translate-x-5" : "translate-x-0"
+                      watchIsActive ? "translate-x-5" : "translate-x-0"
                     )}
                   />
                 </button>
@@ -437,7 +437,7 @@ export default function ServiceDetailsPage() {
             </div>
 
             {/* Version History Card */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+            {/* <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest border-b pb-2">
                 Version History
               </h3>
@@ -471,7 +471,7 @@ export default function ServiceDetailsPage() {
               <button type="button" className="text-xs font-bold text-primary hover:underline border-t border-dashed w-full pt-3 text-left">
                 View Audit Logs
               </button>
-            </div>
+            </div> */}
 
             {/* Display Media Card */}
             <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">

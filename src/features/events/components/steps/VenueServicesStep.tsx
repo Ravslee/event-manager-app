@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
-import { MapPin, Search } from "lucide-react";
+import { MapPin, Search, Plus, Minus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn, formatCurrency } from "@/lib/utils";
 import { getServices } from "@/features/services/api/service.api";
-import mapPreview from "@/assets/map_preview.png";
 
 const defaultServices = [
   { _id: "srv-livestream", name: "Live Stream", price: 150, description: "Real-time broadcasting service" },
@@ -50,6 +49,25 @@ export function VenueServicesStep() {
       return sum + cost;
     }, 0);
 
+  // Sort checked services to bubble up to top in order of selection
+  const sortedServices = [...services].sort((a, b) => {
+    const aVal = watchedServices[a._id];
+    const bVal = watchedServices[b._id];
+    const aChecked = !!aVal?.checked;
+    const bChecked = !!bVal?.checked;
+
+    if (aChecked && !bChecked) return -1;
+    if (!aChecked && bChecked) return 1;
+
+    if (aChecked && bChecked) {
+      const aOrder = aVal?.selectionOrder || 0;
+      const bOrder = bVal?.selectionOrder || 0;
+      return aOrder - bOrder;
+    }
+
+    return 0;
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 border-b pb-4">
@@ -59,174 +77,153 @@ export function VenueServicesStep() {
         <h2 className="text-lg font-semibold text-foreground">Venue & Services</h2>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Form Panel */}
-        <div className="lg:col-span-8 space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="venueName">Venue Name</Label>
-            <Input
-              id="venueName"
-              placeholder="e.g. The Glass House"
-              className="h-10"
-              {...register("venue.name")}
-            />
-            {errors.venue && (errors.venue as any).name && (
-              <p className="text-xs text-destructive">{(errors.venue as any).name.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="venueAddress">Full Address</Label>
-            <Input
-              id="venueAddress"
-              placeholder="123 Creative Blvd, New York, NY 10001"
-              className="h-10"
-              {...register("venue.address")}
-            />
-            {errors.venue && (errors.venue as any).address && (
-              <p className="text-xs text-destructive">{(errors.venue as any).address.message}</p>
-            )}
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="venueName">Venue Name</Label>
+          <Input
+            id="venueName"
+            placeholder="e.g. The Glass House"
+            className="h-10"
+            {...register("venue.name")}
+          />
+          {errors.venue && (errors.venue as any).name && (
+            <p className="text-xs text-destructive">{(errors.venue as any).name.message}</p>
+          )}
         </div>
 
-        {/* Right Map Preview Panel */}
-        <div className="lg:col-span-4 flex flex-col justify-end space-y-2">
-          <Label>Map Preview</Label>
-          <div className="rounded-xl border bg-card overflow-hidden h-[106px] relative shadow-sm flex items-center justify-center">
-            <img
-              src={mapPreview}
-              alt="Map Preview"
-              className="object-cover w-full h-full opacity-90 transition-opacity hover:opacity-100"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="venueAddress">Full Address</Label>
+          <Input
+            id="venueAddress"
+            placeholder="123 Creative Blvd, New York, NY 10001"
+            className="h-10"
+            {...register("venue.address")}
+          />
+          {errors.venue && (errors.venue as any).address && (
+            <p className="text-xs text-destructive">{(errors.venue as any).address.message}</p>
+          )}
         </div>
       </div>
 
       {/* Services Checklist */}
-      <div className="space-y-3">
-        <Label>Requested Services</Label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {services.map((service) => {
+      <div className="space-y-2 sm:space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs sm:text-sm font-bold">Requested Services</Label>
+          <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground">Select services & qty</span>
+        </div>
+
+        <div className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-y-auto max-h-56 sm:max-h-72 shadow-xs pr-0.5">
+          {sortedServices.map((service) => {
             const serviceVal = watchedServices[service._id];
             const isChecked = !!serviceVal?.checked;
 
             // Format price string based on model
             let pricingLabel = "";
             if (service.pricingModel === "hourly") {
-              pricingLabel = `${formatCurrency(service.price)} / hr`;
+              pricingLabel = `${formatCurrency(service.price)}/hr`;
             } else if (service.pricingModel === "per_guest") {
-              pricingLabel = `${formatCurrency(service.price)} / guest`;
+              pricingLabel = `${formatCurrency(service.price)}/guest`;
             } else {
               pricingLabel = `${formatCurrency(service.price)} flat`;
             }
+
+            const unitLabel =
+              service.pricingModel === "hourly"
+                ? "hrs"
+                : service.pricingModel === "per_guest"
+                ? "gst"
+                : "qty";
 
             return (
               <div
                 key={service._id}
                 className={cn(
-                  "flex flex-col gap-3 rounded-xl border p-4 hover:bg-accent/40 transition-all duration-200 select-none",
+                  "flex items-center justify-between h-10 sm:h-12 px-2 sm:px-4 gap-1.5 sm:gap-3 transition-all duration-150 select-none shrink-0",
                   isChecked
-                    ? "border-primary bg-primary/5 shadow-[0_0_12px_rgba(99,102,241,0.05)]"
-                    : "border-border bg-card"
+                    ? "bg-primary/[0.04] dark:bg-primary/[0.08]"
+                    : "hover:bg-accent/30"
                 )}
               >
-                <div className="flex items-center gap-4">
+                {/* Left: Checkbox + Name + Description */}
+                <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
                   <Controller
                     control={control}
-                    name={`services.${service._id}.checked`}
+                    name={`services.${service._id}`}
                     render={({ field }) => (
                       <Checkbox
                         id={service._id}
-                        checked={!!field.value}
-                        onCheckedChange={(checked) => field.onChange(!!checked)}
-                        className="size-5"
+                        checked={!!field.value?.checked}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setValue(`services.${service._id}`, {
+                              ...field.value,
+                              checked: true,
+                              quantity: field.value?.quantity || (service.pricingModel === "hourly" ? watchedDuration || 1 : 1),
+                              selectionOrder: Date.now(),
+                            });
+                          } else {
+                            setValue(`services.${service._id}`, {
+                              ...field.value,
+                              checked: false,
+                            });
+                          }
+                        }}
+                        className="size-3.5 sm:size-5 shrink-0"
                       />
                     )}
                   />
-                  <label htmlFor={service._id} className="flex-1 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-foreground">{service.name}</span>
-                      <span className="text-sm font-medium text-primary">{pricingLabel}</span>
+                  <label htmlFor={service._id} className="flex-1 cursor-pointer min-w-0">
+                    <div className="flex items-center gap-1 min-w-0">
+                      <span className="text-[11px] sm:text-sm font-bold text-foreground truncate leading-tight">{service.name}</span>
                     </div>
                     {service.description && (
-                      <p className="text-xs text-muted-foreground mt-0.5">{service.description}</p>
+                      <p className="text-[9px] sm:text-xs text-muted-foreground truncate leading-none mt-0.5 hidden xs:block">{service.description}</p>
                     )}
                   </label>
                 </div>
 
-                {isChecked && (
-                  <div
-                    className="mt-1 pt-3 border-t border-dashed border-border/60 flex items-center justify-between gap-4"
-                    onClick={(e) => e.stopPropagation()}
-                    onMouseDown={(e) => e.stopPropagation()}
-                  >
-                    <span className="text-xs text-muted-foreground font-medium">
-                      {service.pricingModel === "hourly"
-                        ? "Duration"
-                        : service.pricingModel === "per_guest"
-                        ? "Guests"
-                        : "Quantity"}
-                    </span>
-                    <div className="relative flex items-center max-w-[120px]">
-                      <Input
-                        type="number"
-                        min="1"
-                        className="h-8 pr-8 text-xs font-semibold text-right bg-transparent border border-input rounded"
-                        value={serviceVal?.quantity ?? (service.pricingModel === "hourly" ? watchedDuration : 1)}
-                        onChange={(e) => {
-                          const val = e.target.value === "" ? "" : Number(e.target.value);
-                          setValue(`services.${service._id}.quantity`, val);
+                {/* Right: Quantity Stepper */}
+                <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+                  {isChecked && (
+                    <div
+                      className="flex items-center border border-input rounded-lg bg-background overflow-hidden shrink-0 shadow-2xs"
+                      onClick={(e) => e.stopPropagation()}
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const currentVal = Number(serviceVal?.quantity ?? (service.pricingModel === "hourly" ? watchedDuration : 1));
+                          if (currentVal > 1) {
+                            setValue(`services.${service._id}.quantity`, currentVal - 1);
+                          }
                         }}
-                      />
-                      <span className="absolute right-2 text-[10px] text-muted-foreground font-medium pointer-events-none">
-                        {service.pricingModel === "hourly"
-                          ? "hrs"
-                          : service.pricingModel === "per_guest"
-                          ? "guests"
-                          : "qty"}
+                        className="h-6 w-5 sm:h-8 sm:w-7 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors border-r border-border/60 font-black text-[10px] sm:text-xs"
+                      >
+                        <Minus className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      </button>
+                      <span className="min-w-10 sm:min-w-14 px-1 text-center text-[10px] sm:text-xs font-extrabold text-foreground">
+                        {serviceVal?.quantity ?? (service.pricingModel === "hourly" ? watchedDuration : 1)} {unitLabel}
                       </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const currentVal = Number(serviceVal?.quantity ?? (service.pricingModel === "hourly" ? watchedDuration : 1));
+                          setValue(`services.${service._id}.quantity`, currentVal + 1);
+                        }}
+                        className="h-6 w-5 sm:h-8 sm:w-7 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors border-l border-border/60 font-black text-[10px] sm:text-xs"
+                      >
+                        <Plus className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      </button>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Duration and Pricing Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-6">
-        <div className="space-y-2">
-          <Label htmlFor="estimatedDuration">Estimated Duration (Hours)</Label>
-          <div className="relative flex items-center">
-            <Input
-              id="estimatedDuration"
-              type="number"
-              min="1"
-              className="h-10 pr-12"
-              {...register("estimatedDuration")}
-            />
-            <span className="absolute right-3 text-sm text-muted-foreground font-medium pointer-events-none">
-              hrs
-            </span>
-          </div>
-          {errors.estimatedDuration && (
-            <p className="text-xs text-destructive">{errors.estimatedDuration.message as string}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label>Total Amount</Label>
-          <div className="relative">
-            <Input
-              value={formatCurrency(totalAmount)}
-              disabled
-              className="h-10 bg-muted/40 font-semibold text-foreground disabled:opacity-100"
-            />
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
