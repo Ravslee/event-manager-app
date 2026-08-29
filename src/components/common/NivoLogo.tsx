@@ -39,27 +39,58 @@ export function NivoLogo({ className, size = "md", showSubtitle = false }: NivoL
           strokeLinecap="round"
         />
 
-        {/* Lowercase nivo Text */}
-        <text
-          x="50"
-          y="60"
-          textAnchor="middle"
-          dominantBaseline="central"
-          className="fill-foreground font-extrabold"
-          style={{
-            fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-            fontSize: "30px",
-            fontWeight: 800,
-            letterSpacing: "-0.5px"
-          }}
-        >
-          nivo
-        </text>
+        {/* Lisa BC Vector Letterforms for 'nivo' */}
+        <g className="text-foreground" style={{ color: "currentColor" }}>
+          {/* 'n' */}
+          <path
+            d="M 20 68 V 46 M 20 54 C 20 48 24 44 30 44 C 35.5 44 38 48 38 54 V 68"
+            stroke="currentColor"
+            strokeWidth="4.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+
+          {/* 'i' */}
+          <line
+            x1="45"
+            y1="50"
+            x2="45"
+            y2="68"
+            stroke="currentColor"
+            strokeWidth="4.5"
+            strokeLinecap="round"
+          />
+          <circle cx="45" cy="42" r="2.8" fill="currentColor" />
+
+          {/* 'v' */}
+          <path
+            d="M 52 46.5 L 60 68 L 68 46.5"
+            stroke="currentColor"
+            strokeWidth="4.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+
+          {/* 'o' */}
+          <circle
+            cx="80"
+            cy="57"
+            r="10.5"
+            stroke="currentColor"
+            strokeWidth="4.5"
+            fill="none"
+          />
+        </g>
       </svg>
 
       {showSubtitle && (
         <div className="min-w-0 flex flex-col justify-center">
-          <span className="font-extrabold text-sm sm:text-base text-foreground leading-none tracking-tight">
+          <span
+            className="font-extrabold text-sm sm:text-base text-foreground leading-none tracking-tight lowercase"
+            style={{ fontFamily: "'Lisa BC', 'Lisa', 'Outfit', system-ui, sans-serif" }}
+          >
             nivo
           </span>
           <span className="text-[10px] sm:text-[11px] text-muted-foreground font-medium mt-0.5 truncate">
