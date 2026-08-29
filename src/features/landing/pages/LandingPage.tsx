@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { useState, useEffect } from "react";
+import { NivoLogo } from "@/components/common/NivoLogo";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -76,16 +77,11 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-7xl px-4 sm:px-8 h-16 sm:h-20 flex items-center justify-between">
           
           {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
-            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-md group-hover:scale-105 transition-transform shrink-0">
-              <Calendar className="h-4 w-4 sm:h-5 sm:w-5" />
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-foreground">NIVO</span>
-              <span className="text-[9px] sm:text-[10px] font-extrabold uppercase px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 tracking-wider">
-                🇮🇳 India
-              </span>
-            </div>
+          <Link to="/" className="flex items-center gap-2 group">
+            <NivoLogo size="md" />
+            <span className="text-[9px] sm:text-[10px] font-extrabold uppercase px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 tracking-wider">
+              🇮🇳 India
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -710,10 +706,7 @@ export default function LandingPage() {
       <footer className="border-t border-border/60 py-8 sm:py-12 bg-background">
         <div className="container mx-auto max-w-7xl px-4 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-muted-foreground font-medium text-center md:text-left">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-extrabold">
-              <Calendar className="h-4 w-4" />
-            </div>
-            <span className="font-extrabold text-foreground text-sm tracking-tight">NIVO 🇮🇳 Freelancer Hub</span>
+            <NivoLogo size="sm" showSubtitle />
           </div>
 
           <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6">
