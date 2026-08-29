@@ -1,7 +1,7 @@
 export function RegisterHero() {
   return (
     <div className="hidden lg:flex flex-col justify-between bg-slate-900 p-14 text-white">
-      <h2 className="text-xl font-bold text-primary">MyFolio</h2>
+      <h2 className="text-xl font-bold text-primary">NIVO</h2>
 
       <div>
         <h1 className="text-5xl font-bold leading-tight">
@@ -9,7 +9,7 @@ export function RegisterHero() {
         </h1>
 
         <p className="mt-6 max-w-md text-slate-300">
-          Join thousands of managers who trust MyFolio for seamless event
+          Join thousands of managers who trust NIVO for seamless event
           management, payments and client relationships.
         </p>
       </div>

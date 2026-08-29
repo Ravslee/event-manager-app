@@ -29,6 +29,7 @@ const eventMasterSchema = z.object({
   services: venueServicesSchema.shape.services,
   estimatedDuration: venueServicesSchema.shape.estimatedDuration,
   notes: reviewSchema.shape.notes,
+  advancePaid: z.any().optional(),
 });
 
 interface EventWizardProps {
@@ -61,6 +62,7 @@ const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => 
       services: {},
       estimatedDuration: 4,
       notes: "",
+      advancePaid: 0,
     },
     mode: "onChange",
   });
@@ -248,7 +250,7 @@ const EventWizard: FC<EventWizardProps> = ({ eventId, onSuccess, onCancel }) => 
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col h-auto min-h-full gap-4 rounded-xl border bg-background p-4 md:p-5 shadow-sm">
+      <div className="flex flex-col h-auto min-h-full gap-5 rounded-2xl border border-border/80 bg-card p-4 sm:p-6 shadow-xs">
         <WizardHeader
           title={eventId ? "Edit Event" : "Create New Event"}
           description={eventId ? "Modify the event details and booked services." : "Fill in the details to schedule a new creative production or client meeting."}

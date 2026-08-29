@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import AuthLayout from "@/layouts/AuthLayout";
 
+import LandingPage from "@/features/landing/pages/LandingPage";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
 
@@ -17,8 +18,38 @@ import SettingsPage from "@/features/settings/pages/SettingsPage";
 import MainLayout from "@/layouts/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
 
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { Loader2 } from "lucide-react";
+
+function RootIndexRoute() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <LandingPage />;
+}
+
 export const router = createBrowserRouter([
   // Public Routes
+  {
+    path: "/",
+    element: <RootIndexRoute />,
+  },
+  {
+    path: "/landing",
+    element: <LandingPage />,
+  },
   {
     element: <AuthLayout />,
     children: [
@@ -39,10 +70,6 @@ export const router = createBrowserRouter([
       {
         element: <MainLayout />,
         children: [
-          {
-            index: true,
-            element: <DashboardPage />,
-          },
           {
             path: "dashboard",
             element: <DashboardPage />,

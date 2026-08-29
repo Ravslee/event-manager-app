@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { FloatingActionButton } from "@/components/common/FloatingActionButton";
 import { cn, formatCurrency } from "@/lib/utils";
 
 import StatCard from "@/features/dashboard/components/StatCard";
@@ -132,15 +133,10 @@ export default function PaymentsPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-6 pb-8">
-      {/* Breadcrumb & Header Row */}
+    <div className="container mx-auto max-w-7xl space-y-6 pb-24">
+      {/* Header Row */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
-            <span>Finance</span>
-            <span>/</span>
-            <span className="text-foreground">Payments</span>
-          </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
             Payments
           </h1>
@@ -150,58 +146,73 @@ export default function PaymentsPage() {
         </div>
 
         <div className="flex items-center gap-2 self-start md:self-auto">
-          <Button variant="outline" className="h-10 px-4 text-xs rounded-xl gap-1.5">
+          <Button variant="outline" className="h-10 px-4 text-xs rounded-xl gap-1.5 cursor-pointer">
             <Download className="h-4 w-4" />
             Export CSV
           </Button>
         </div>
       </div>
 
-      {/* Stats Row */}
-      <div className="grid gap-3 md:gap-6 grid-cols-2 md:grid-cols-3">
-        <StatCard
-          title="TOTAL REVENUE"
-          value={formatCurrency(stats.totalRevenue)}
-          icon={CreditCard}
-          change={12}
-          progress={75}
-        />
-        <StatCard
-          title="PENDING PAYMENTS"
-          value={formatCurrency(stats.pendingAmount)}
-          icon={BanknoteArrowDown}
-          change={-5}
-          progress={40}
-        />
-        <StatCard
-          title="OVERDUE AMOUNT"
-          value={formatCurrency(stats.overdueAmount)}
-          icon={AlertTriangle}
-          change={2}
-          progress={15}
-        />
-      </div>
+      <FloatingActionButton
+        label="Record Payment"
+        onClick={() => {}}
+      />
+
+      {/* Stats Row: Combined Single Card */}
+      <Card className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 sm:divide-x divide-border/60">
+          <div className="flex items-center gap-3.5 sm:px-5 first:pl-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+              <CreditCard className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Revenue</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-foreground">{formatCurrency(stats.totalRevenue)}</h3>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3.5 sm:px-5 pt-3 sm:pt-0 border-t sm:border-t-0 border-border/40">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0">
+              <BanknoteArrowDown className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Pending Payments</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-amber-600 dark:text-amber-400">{formatCurrency(stats.pendingAmount)}</h3>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3.5 sm:px-5 last:pr-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-border/40">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shrink-0">
+              <AlertTriangle className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Overdue Amount</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-rose-600 dark:text-rose-400">{formatCurrency(stats.overdueAmount)}</h3>
+            </div>
+          </div>
+        </div>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-3 xl:grid-cols-4">
         {/* Main List */}
         <div className="lg:col-span-2 xl:col-span-3 space-y-6">
           <Card className="rounded-2xl shadow-sm">
-            <CardHeader className="pb-3 border-b flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">Recent Transactions</CardTitle>
+            <CardHeader className="pb-3 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-6">
+              <CardTitle className="text-lg font-bold">Recent Transactions</CardTitle>
 
               {/* Search & Filters */}
-              <div className="flex items-center gap-2">
-                <div className="relative">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+                <div className="relative w-full sm:w-64">
                   <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     placeholder="Search transactions..."
-                    className="pl-8 h-9 w-64 text-xs bg-muted/30"
+                    className="pl-8 h-9 text-xs bg-muted/30 w-full"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
                 <select
-                  className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs outline-none focus-visible:ring-1"
+                  className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs outline-none focus-visible:ring-1 w-full sm:w-auto"
                   value={statusFilter}
                   onChange={(e) => {
                     setStatusFilter(e.target.value);
@@ -215,8 +226,70 @@ export default function PaymentsPage() {
                 </select>
               </div>
             </CardHeader>
+            
             <CardContent className="p-0">
-              <div className="overflow-x-auto">
+              {/* Mobile Cards List View (visible on small screens) */}
+              <div className="block md:hidden divide-y divide-border/50">
+                {isLoading ? (
+                  <div className="p-6 text-center text-xs text-muted-foreground">
+                    Loading payments...
+                  </div>
+                ) : paginatedPayments.length === 0 ? (
+                  <div className="p-6 text-center text-xs text-muted-foreground">
+                    No transactions found.
+                  </div>
+                ) : (
+                  paginatedPayments.map((payment) => (
+                    <div
+                      key={payment._id}
+                      onClick={() => navigate(`/payments/${payment.eventId._id}`)}
+                      className="p-4 space-y-3 hover:bg-muted/10 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <Avatar className="h-8 w-8 rounded-md border shrink-0">
+                            <AvatarFallback className="text-xs bg-primary/10 text-primary rounded-md">
+                              {getInitials(payment.eventId?.client?.name)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-xs text-foreground truncate">
+                              {payment.eventId?.client?.name || "Unknown"}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground truncate">
+                              {payment.eventId?.title || "No Title"}
+                            </p>
+                          </div>
+                        </div>
+
+                        <span className={cn(
+                          "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold shrink-0",
+                          getStatusBadgeClass(payment.status)
+                        )}>
+                          {payment.status}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs pt-1 border-t border-border/40">
+                        <span className="text-muted-foreground">
+                          {payment.eventId?.eventDate
+                            ? format(new Date(payment.eventId.eventDate), "MMM d, yyyy")
+                            : "N/A"}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-foreground text-sm">
+                            {formatCurrency(payment.totalAmount)}
+                          </span>
+                          <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Desktop Table View (hidden on small screens) */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b bg-muted/20 text-xs text-muted-foreground uppercase tracking-wider text-left">
@@ -308,7 +381,7 @@ export default function PaymentsPage() {
 
               {/* Pagination Footer */}
               {!isLoading && filteredPayments.length > 0 && (
-                <div className="border-t p-4 flex items-center justify-between bg-muted/10 text-xs text-muted-foreground rounded-b-2xl">
+                <div className="border-t p-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-muted/10 text-xs text-muted-foreground rounded-b-2xl text-center sm:text-left">
                   <div>
                     Showing {Math.min((currentPage - 1) * itemsPerPage + 1, filteredPayments.length)} to {Math.min(currentPage * itemsPerPage, filteredPayments.length)} of {filteredPayments.length} transactions
                   </div>
@@ -316,7 +389,7 @@ export default function PaymentsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="h-8"
+                      className="h-8 text-xs"
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage(p => p - 1)}
                     >
@@ -325,7 +398,7 @@ export default function PaymentsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="h-8"
+                      className="h-8 text-xs"
                       disabled={currentPage === totalPages}
                       onClick={() => setCurrentPage(p => p + 1)}
                     >

@@ -1,6 +1,7 @@
 import { ArrowRight, CalendarOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import ScheduleItemRow from "./ScheduleItem";
 import { type ScheduleCardProps } from "./types";
 
@@ -8,12 +9,13 @@ export default function ScheduleCard({
   title,
   subtitle,
   items,
+  className,
 }: ScheduleCardProps) {
   const navigate = useNavigate();
 
   return (
-    <Card className="overflow-hidden rounded-2xl border border-border shadow-xs">
-      <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border/60 bg-card">
+    <Card className={cn("overflow-hidden rounded-2xl border border-border shadow-xs flex flex-col min-h-[480px]", className)}>
+      <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border/60 bg-card shrink-0">
         <div>
           <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-foreground">{title}</h2>
           {subtitle && <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{subtitle}</p>}
@@ -29,7 +31,7 @@ export default function ScheduleCard({
       </div>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center bg-card/40">
+        <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center bg-card/40 flex-1">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-3">
             <CalendarOff className="h-6 w-6" />
           </div>
@@ -39,7 +41,7 @@ export default function ScheduleCard({
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-border/60">
+        <div className="divide-y divide-border/60 flex-1 overflow-y-auto">
           {items.map((item) => (
             <ScheduleItemRow key={item.id} item={item} />
           ))}
@@ -48,3 +50,4 @@ export default function ScheduleCard({
     </Card>
   );
 }
+

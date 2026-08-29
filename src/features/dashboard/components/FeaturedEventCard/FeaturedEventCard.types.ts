@@ -3,6 +3,7 @@ export interface FeaturedEventCardProps {
   title: string;
   description: string;
   date: string;
-  image: string;
+  image?: string;
   onDetails?: () => void;
 }
+

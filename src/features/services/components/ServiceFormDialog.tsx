@@ -35,16 +35,6 @@ const categoryOptions = [
   "General",
 ];
 
-const imagePresets = [
-  { value: "/services/catering.png", label: "Catering Mockup" },
-  { value: "/services/av_equipment.png", label: "AV Equipment Mockup" },
-  { value: "/services/security.png", label: "Event Security Mockup" },
-  { value: "/services/photography.png", label: "Photography Mockup" },
-  { value: "/services/decor.png", label: "Venue Decor Mockup" },
-  { value: "/services/transport.png", label: "Transportation Mockup" },
-  { value: "", label: "None (Default Image)" },
-];
-
 export default function ServiceFormDialog({
   open,
   onClose,
@@ -73,7 +63,6 @@ export default function ServiceFormDialog({
   });
 
   const selectedColor = watch("color");
-  const selectedImage = watch("image");
 
   useEffect(() => {
     if (open) {
@@ -215,20 +204,7 @@ export default function ServiceFormDialog({
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Image Preset</Label>
-            <select
-              className="h-10 w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed md:text-sm dark:bg-input/30"
-              value={selectedImage}
-              onChange={(e) => setValue("image", e.target.value)}
-            >
-              {imagePresets.map((preset) => (
-                <option key={preset.value} value={preset.value}>
-                  {preset.label}
-                </option>
-              ))}
-            </select>
-          </div>
+
 
           {/* Color Picker Swatches */}
           <div className="space-y-2 pb-2">

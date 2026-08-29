@@ -1,13 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
-import { 
-  Plus, 
-  Search, 
-  Trash2, 
-  Eye, 
-  Calendar, 
-  MapPin, 
-  User, 
-  Clock, 
+import {
+  Plus,
+  Search,
+  Trash2,
+  Calendar,
+  CalendarDays,
+  MapPin,
+  User,
+  Clock,
   SlidersHorizontal,
   Mail,
   Phone,
@@ -19,18 +19,23 @@ import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle, 
-  SheetDescription 
+import { FloatingActionButton } from "@/components/common/FloatingActionButton";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription
 } from "@/components/ui/sheet";
 import { cn, formatCurrency } from "@/lib/utils";
 import { getEvents, deleteEvent, updateEvent } from "../api/event.api";
 import { getEventTypes } from "@/features/event-types/api/event-type.api";
 import { EventWizard } from "../components/wizard";
+import EventCategoryGraphic, { getCategoryConfig } from "../components/EventCategoryGraphic";
+
 
 export default function EventsPage() {
   const [view, setView] = useState<"list" | "create">("list");
@@ -153,15 +158,15 @@ export default function EventsPage() {
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "Confirmed":
-        return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20";
+        return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 font-bold";
       case "Pending":
-        return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20";
+        return "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 font-bold";
       case "Completed":
-        return "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20";
+        return "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30 font-bold";
       case "Cancelled":
-        return "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20";
+        return "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30 font-bold";
       default:
-        return "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-500/10 dark:text-slate-400 dark:border-slate-500/20";
+        return "bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/30 font-bold";
     }
   };
 
@@ -181,8 +186,8 @@ export default function EventsPage() {
     return (
       <div className="container mx-auto max-w-4xl h-[calc(100vh-112px)] flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-300">
         <div className="mb-2 shrink-0">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => {
               setView("list");
               setEditingEventId(null);
@@ -193,7 +198,7 @@ export default function EventsPage() {
           </Button>
         </div>
         <div className="flex-1 min-h-0">
-          <EventWizard 
+          <EventWizard
             eventId={editingEventId || undefined}
             onSuccess={() => {
               setView("list");
@@ -211,15 +216,10 @@ export default function EventsPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-6 pb-8">
-      {/* Breadcrumb & Header Row */}
+    <div className="container mx-auto max-w-7xl space-y-6 pb-24">
+      {/* Header Row */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
-            <span>Management</span>
-            <span>/</span>
-            <span className="text-foreground">Events</span>
-          </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
             Events Manager
           </h1>
@@ -228,46 +228,57 @@ export default function EventsPage() {
           </p>
         </div>
 
-        <Button
-          onClick={() => setView("create")}
-          className="h-10 px-5 gap-1.5 self-start md:self-auto bg-primary text-primary-foreground hover:bg-primary/95 shadow-sm rounded-xl"
-        >
-          <Plus className="h-4.5 w-4.5" />
-          Create Event
-        </Button>
       </div>
 
-      {/* Stats Section */}
-      <div className="grid gap-2.5 sm:gap-3 grid-cols-2 md:grid-cols-4">
-        <div className="rounded-xl border border-border bg-card p-2.5 sm:p-4 text-card-foreground shadow-xs flex flex-col justify-between">
-          <div className="flex items-center justify-between space-y-0 pb-1 gap-1">
-            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">Total Events</span>
-            <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground shrink-0" />
+      <FloatingActionButton
+        label="Create Event"
+        onClick={() => setView("create")}
+      />
+
+      {/* Stats Section: Combined Single Card */}
+      <Card className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 md:divide-x divide-border/60">
+          <div className="flex items-center gap-3.5 md:px-5 first:pl-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+              <Calendar className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Events</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-foreground">{stats.total}</h3>
+            </div>
           </div>
-          <div className="text-base sm:text-2xl font-extrabold tracking-tight mt-0.5">{stats.total}</div>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-2.5 sm:p-4 text-card-foreground shadow-xs flex flex-col justify-between">
-          <div className="flex items-center justify-between space-y-0 pb-1 gap-1">
-            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">Confirmed</span>
-            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+
+          <div className="flex items-center gap-3.5 md:px-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+              <span className="h-3 w-3 rounded-full bg-emerald-500" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Confirmed</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-emerald-600 dark:text-emerald-400">{stats.confirmed}</h3>
+            </div>
           </div>
-          <div className="text-base sm:text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 mt-0.5">{stats.confirmed}</div>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-2.5 sm:p-4 text-card-foreground shadow-xs flex flex-col justify-between">
-          <div className="flex items-center justify-between space-y-0 pb-1 gap-1">
-            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">Pending</span>
-            <span className="h-2 w-2 rounded-full bg-amber-500 shrink-0" />
+
+          <div className="flex items-center gap-3.5 md:px-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0">
+              <span className="h-3 w-3 rounded-full bg-amber-500" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Pending</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-amber-600 dark:text-amber-400">{stats.pending}</h3>
+            </div>
           </div>
-          <div className="text-base sm:text-2xl font-extrabold tracking-tight text-amber-600 dark:text-amber-400 mt-0.5">{stats.pending}</div>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-2.5 sm:p-4 text-card-foreground shadow-xs flex flex-col justify-between">
-          <div className="flex items-center justify-between space-y-0 pb-1 gap-1">
-            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">Completed</span>
-            <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0" />
+
+          <div className="flex items-center gap-3.5 md:px-5 last:pr-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 shrink-0">
+              <span className="h-3 w-3 rounded-full bg-blue-500" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Completed</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-blue-600 dark:text-blue-400">{stats.completed}</h3>
+            </div>
           </div>
-          <div className="text-base sm:text-2xl font-extrabold tracking-tight text-blue-600 dark:text-blue-400 mt-0.5">{stats.completed}</div>
         </div>
-      </div>
+      </Card>
 
       {/* Search & Filter Bar */}
       <div className="flex flex-col gap-3 p-4 rounded-xl border bg-card/60 shadow-xs sm:flex-row sm:items-center">
@@ -351,104 +362,75 @@ export default function EventsPage() {
           {filteredAndSortedEvents.map((event) => {
             const typeColor = typeof event.eventTypeId === "object" ? event.eventTypeId?.color : "#3B82F6";
             const typeName = typeof event.eventTypeId === "object" ? event.eventTypeId?.name : "Event";
-            
-            return (
-              <div
-                key={event._id}
-                className="relative flex flex-col justify-between overflow-hidden rounded-xl border bg-card p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:hover:bg-accent/10"
-                style={{
-                  borderLeft: `4px solid ${typeColor}`,
-                }}
-              >
-                {/* Upper row: title & status */}
-                <div className="space-y-1">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-semibold text-foreground line-clamp-1 text-sm">{event.title}</h3>
-                    <span className={cn(
-                      "inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-semibold transition-colors",
-                      getStatusBadgeClass(event.status)
-                    )}>
-                      {event.status}
-                    </span>
-                  </div>
+            const categoryConfig = getCategoryConfig(typeName, typeColor);
+            const CategoryIcon = categoryConfig.IconComponent;
 
-                  {/* Event Type Name */}
-                  <span
-                    className="inline-block text-[10px] font-medium px-1.5 py-0.5 rounded-md"
-                    style={{
-                      backgroundColor: `${typeColor}15`,
-                      color: typeColor,
+            return (
+              <Card
+                key={event._id}
+                className="relative h-[250px] sm:h-[270px] overflow-hidden rounded-2xl border border-border/80 bg-card p-5 shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group"
+              >
+                {/* Theme-Adaptive Pattern Wallpaper Background Overlay */}
+                <EventCategoryGraphic
+                  typeName={typeName}
+                  typeColor={typeColor}
+                  className="absolute inset-0 h-full w-full pointer-events-none"
+                />
+
+                {/* Top Badge & Status Header */}
+                <div className="relative z-10 flex items-center justify-between gap-2">
+                  <div 
+                    className="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-extrabold shrink-0 shadow-2xs"
+                    style={{ 
+                      backgroundColor: `${typeColor}18`, 
+                      color: typeColor, 
+                      borderColor: `${typeColor}35` 
                     }}
                   >
-                    {typeName}
+                    <CategoryIcon className="h-3.5 w-3.5" />
+                    <span>{typeName}</span>
+                  </div>
+
+                  <span className={cn(
+                    "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-extrabold tracking-wide transition-colors shrink-0",
+                    getStatusBadgeClass(event.status)
+                  )}>
+                    {event.status}
                   </span>
                 </div>
 
-                {/* Details Section */}
-                <div className="space-y-1.5 mt-3 text-xs text-muted-foreground border-y border-border/40 py-2">
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="h-3 w-3 shrink-0 text-primary/70" />
-                    <span>{formatDateString(event.eventDate)}</span>
+                {/* Bottom Card Info & Action */}
+                <div className="relative z-10 space-y-3 pt-4">
+                  <div>
+                    <h2 className="text-lg sm:text-xl font-extrabold text-foreground leading-tight line-clamp-1 group-hover:text-primary transition-colors">
+                      {event.title}
+                    </h2>
+
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                      {event.description ? event.description : `${event.client?.name ? `Client: ${event.client.name}` : ''}${event.venue?.name ? ` • Venue: ${event.venue.name}` : ''}`}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="h-3 w-3 shrink-0 text-primary/70" />
-                    <span>{event.startTime} - {event.endTime || "TBD"}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <User className="h-3 w-3 shrink-0 text-primary/70" />
-                    <span className="line-clamp-1">{event.client?.name || "No Client"}</span>
-                  </div>
-                  {event.venue?.name && (
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-3 w-3 shrink-0 text-primary/70" />
-                      <span className="line-clamp-1">{event.venue.name}</span>
+
+                  <div className="flex items-center justify-between pt-1 border-t border-border/50">
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <CalendarDays className="h-4 w-4 shrink-0 text-foreground" />
+                      <span className="font-semibold text-xs sm:text-sm text-foreground">{formatDateString(event.eventDate)}</span>
                     </div>
-                  )}
-                </div>
 
-                {/* Footer section: Details / Trash */}
-                <div className="flex items-center justify-between mt-3">
-                  <span className="text-xs font-semibold text-foreground">
-                    {event.bookedServices?.length || 0} services
-                  </span>
-                  
-                  <div className="flex items-center gap-2">
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setEditingEventId(event._id);
-                        setView("create");
-                      }}
-                      className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl h-8 px-3 text-xs font-semibold hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer shadow-2xs"
                       onClick={() => {
                         setSelectedEvent(event);
                         setDetailsOpen(true);
                       }}
-                      className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent/50"
                     >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setEventToDelete(event._id);
-                        setDeleteOpen(true);
-                      }}
-                      className="h-8 w-8 text-rose-500 hover:text-rose-600 hover:bg-rose-50/50 dark:hover:bg-rose-950/20"
-                    >
-                      <Trash2 className="h-4 w-4" />
+                      Details
                     </Button>
                   </div>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
@@ -456,33 +438,66 @@ export default function EventsPage() {
 
       {/* Details Side Panel Sheet */}
       <Sheet open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <SheetContent className="sm:max-w-md w-full overflow-y-auto p-6">
+        <SheetContent className="sm:max-w-md w-full overflow-y-auto p-6 pb-20">
           {selectedEvent && (
             <div className="h-full flex flex-col space-y-6 pr-1">
-              <SheetHeader className="p-0 border-b border-border pb-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <select
-                    value={selectedEvent.status}
-                    onChange={(e) => handleStatusChange(selectedEvent._id, e.target.value)}
-                    className={cn(
-                      "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold cursor-pointer outline-none transition-colors",
-                      getStatusBadgeClass(selectedEvent.status)
-                    )}
-                  >
-                    <option value="Confirmed" className="bg-background text-foreground">Confirmed</option>
-                    <option value="Pending" className="bg-background text-foreground">Pending</option>
-                    <option value="Completed" className="bg-background text-foreground">Completed</option>
-                    <option value="Cancelled" className="bg-background text-foreground">Cancelled</option>
-                  </select>
-                  <span
-                    className="inline-block text-xs font-medium px-2.5 py-0.5 rounded-md"
-                    style={{
-                      backgroundColor: `${typeof selectedEvent.eventTypeId === "object" ? selectedEvent.eventTypeId?.color : "#3B82F6"}15`,
-                      color: typeof selectedEvent.eventTypeId === "object" ? selectedEvent.eventTypeId?.color : "#3B82F6",
-                    }}
-                  >
-                    {typeof selectedEvent.eventTypeId === "object" ? selectedEvent.eventTypeId?.name : "Event"}
-                  </span>
+              <SheetHeader className="pt-5 pr-10 pb-4 border-b border-border space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <select
+                      value={selectedEvent.status}
+                      onChange={(e) => handleStatusChange(selectedEvent._id, e.target.value)}
+                      className={cn(
+                        "rounded-full border px-2.5 py-0.5 text-xs font-bold transition-colors cursor-pointer bg-background outline-none",
+                        getStatusBadgeClass(selectedEvent.status)
+                      )}
+                    >
+                      <option value="Draft" className="bg-background text-foreground">Draft</option>
+                      <option value="Confirmed" className="bg-background text-foreground">Confirmed</option>
+                      <option value="In-Progress" className="bg-background text-foreground">In-Progress</option>
+                      <option value="Completed" className="bg-background text-foreground">Completed</option>
+                      <option value="Cancelled" className="bg-background text-foreground">Cancelled</option>
+                    </select>
+                    <span
+                      className="inline-block text-xs font-medium px-2.5 py-0.5 rounded-md"
+                      style={{
+                        backgroundColor: `${typeof selectedEvent.eventTypeId === "object" ? selectedEvent.eventTypeId?.color : "#3B82F6"}15`,
+                        color: typeof selectedEvent.eventTypeId === "object" ? selectedEvent.eventTypeId?.color : "#3B82F6",
+                      }}
+                    >
+                      {typeof selectedEvent.eventTypeId === "object" ? selectedEvent.eventTypeId?.name : "Event"}
+                    </span>
+                  </div>
+
+                  {/* Top Action Icon Buttons: Edit & Delete */}
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      title="Edit Event"
+                      onClick={() => {
+                        setDetailsOpen(false);
+                        setEditingEventId(selectedEvent._id);
+                        setView("create");
+                      }}
+                      className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg cursor-pointer transition-colors"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      title="Delete Event"
+                      onClick={() => {
+                        setDetailsOpen(false);
+                        setEventToDelete(selectedEvent._id);
+                        setDeleteOpen(true);
+                      }}
+                      className="h-8 w-8 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg cursor-pointer transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <SheetTitle className="text-xl font-bold text-foreground">{selectedEvent.title}</SheetTitle>
                 <SheetDescription className="text-xs mt-1">
@@ -569,7 +584,7 @@ export default function EventsPage() {
                     {selectedEvent.bookedServices?.length || 0} Allocated
                   </span>
                 </div>
-                
+
                 {selectedEvent.bookedServices && selectedEvent.bookedServices.length > 0 ? (
                   <div className="rounded-lg border bg-card overflow-hidden">
                     <div className="divide-y divide-border/40">
@@ -601,7 +616,7 @@ export default function EventsPage() {
 
               {/* Notes */}
               {selectedEvent.notes && (
-                <div className="space-y-3 pb-6">
+                <div className="space-y-3">
                   <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Event Notes</h4>
                   <div className="rounded-lg border bg-card p-3 text-sm text-muted-foreground leading-relaxed flex items-start gap-2.5">
                     <FileText className="h-4 w-4 text-primary/70 shrink-0 mt-0.5" />
@@ -609,6 +624,7 @@ export default function EventsPage() {
                   </div>
                 </div>
               )}
+
             </div>
           )}
         </SheetContent>

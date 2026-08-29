@@ -1,9 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
-import { Plus, Search, Trash2, Edit2, Star, SlidersHorizontal, LayoutGrid, List } from "lucide-react";
+import { Plus, Search, Trash2, Edit2, Star, SlidersHorizontal, LayoutGrid, List, Tag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { FloatingActionButton } from "@/components/common/FloatingActionButton";
 import { cn } from "@/lib/utils";
 import { getEventTypes, deleteEventType } from "../api/event-type.api";
 import { EventTypeDialog } from "../components/EventTypeDialog";
@@ -117,15 +119,10 @@ export default function EventTypesPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-6 pb-8">
+    <div className="container mx-auto max-w-7xl space-y-6 pb-24">
       {/* Header Row */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
-            <span>Settings</span>
-            <span>/</span>
-            <span className="text-foreground">Event Types</span>
-          </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
             Event Types
           </h1>
@@ -134,47 +131,47 @@ export default function EventTypesPage() {
           </p>
         </div>
 
-        <Button
-          onClick={handleOpenAdd}
-          className="h-10 px-5 gap-1.5 self-start md:self-auto bg-primary text-primary-foreground hover:bg-primary/95 shadow-sm rounded-xl"
-        >
-          <Plus className="h-4.5 w-4.5" />
-          Add Event Type
-        </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
-        {/* Total Event Types */}
-        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
-          <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
-            Total Types
-          </span>
-          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.total}</span>
-        </div>
+      <FloatingActionButton
+        label="Add Event Type"
+        onClick={handleOpenAdd}
+      />
 
-        {/* Active Types */}
-        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
-            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
-              Active Types
-            </span>
+      {/* Stats Cards: Combined Single Card */}
+      <Card className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 sm:divide-x divide-border/60">
+          <div className="flex items-center gap-3.5 sm:px-5 first:pl-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+              <Tag className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Types</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-foreground">{stats.total}</h3>
+            </div>
           </div>
-          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.active}</span>
-        </div>
 
-        {/* Default Type */}
-        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
-          <div className="flex items-center gap-1.5 text-primary min-w-0">
-            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current shrink-0" />
-            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
-              Default Type
-            </span>
+          <div className="flex items-center gap-3.5 sm:px-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+              <span className="h-3 w-3 rounded-full bg-emerald-500" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Active Types</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-emerald-600 dark:text-emerald-400">{stats.active}</h3>
+            </div>
           </div>
-          <span className="text-sm sm:text-lg font-bold text-foreground truncate mt-0.5">{stats.defaultType}</span>
+
+          <div className="flex items-center gap-3.5 sm:px-5 last:pr-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0">
+              <Star className="h-5 w-5 fill-current" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Default Type</p>
+              <h3 className="text-base sm:text-lg font-bold text-foreground truncate">{stats.defaultType}</h3>
+            </div>
+          </div>
         </div>
-      </div>
+      </Card>
 
       {/* Filter and Control Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-border bg-card p-3 rounded-2xl gap-3 shadow-sm">

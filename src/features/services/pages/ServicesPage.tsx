@@ -1,11 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, LayoutGrid, List, SlidersHorizontal, ArrowUpDown, DollarSign, Edit2, Trash2 } from "lucide-react";
+import { Plus, LayoutGrid, List, SlidersHorizontal, ArrowUpDown, DollarSign, Edit2, Trash2, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import { cn, formatCurrency } from "@/lib/utils";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import ServiceCard from "../components/ServiceCard";
+import { FloatingActionButton } from "@/components/common/FloatingActionButton";
+import ServiceCard, { getServiceIcon } from "../components/ServiceCard";
 import { getServices, deleteService } from "../api/service.api";
 
 export default function ServicesPage() {
@@ -115,15 +117,10 @@ export default function ServicesPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-6 pb-8">
-      {/* Breadcrumb & Header Row */}
+    <div className="container mx-auto max-w-7xl space-y-6 pb-24">
+      {/* Header Row */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
-            <span>Catalog</span>
-            <span>/</span>
-            <span className="text-foreground">All Services</span>
-          </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
             Services Catalog
           </h1>
@@ -132,44 +129,47 @@ export default function ServicesPage() {
           </p>
         </div>
 
-        <Button onClick={handleOpenAddForm} className="h-10 px-5 gap-1.5 self-start md:self-auto bg-primary text-primary-foreground hover:bg-primary/95 shadow-sm rounded-xl">
-          <Plus className="h-4.5 w-4.5" />
-          Add New Service
-        </Button>
       </div>
 
-      {/* KPI Stats Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
-        {/* Total Services */}
-        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
-          <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
-            Total Services
-          </span>
-          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.total}</span>
-        </div>
+      <FloatingActionButton
+        label="Add New Service"
+        onClick={handleOpenAddForm}
+      />
 
-        {/* Active Services */}
-        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
-            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
-              Active
-            </span>
+      {/* KPI Stats Row: Combined Single Card */}
+      <Card className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 sm:divide-x divide-border/60">
+          <div className="flex items-center gap-3.5 sm:px-5 first:pl-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+              <Layers className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Services</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-foreground">{stats.total}</h3>
+            </div>
           </div>
-          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.active}</span>
-        </div>
 
-        {/* Inactive Services */}
-        <div className="bg-card border border-border p-2.5 sm:p-4 rounded-xl shadow-xs flex flex-col justify-between min-h-[72px] sm:min-h-[96px]">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="h-2 w-2 rounded-full bg-orange-500 shrink-0" />
-            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
-              Inactive
-            </span>
+          <div className="flex items-center gap-3.5 sm:px-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+              <span className="h-3 w-3 rounded-full bg-emerald-500" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Active Services</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-emerald-600 dark:text-emerald-400">{stats.active}</h3>
+            </div>
           </div>
-          <span className="text-base sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.inactive}</span>
+
+          <div className="flex items-center gap-3.5 sm:px-5 last:pr-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 shrink-0">
+              <span className="h-3 w-3 rounded-full bg-orange-500" />
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">Inactive Services</p>
+              <h3 className="text-base sm:text-xl font-extrabold text-orange-600 dark:text-orange-400">{stats.inactive}</h3>
+            </div>
+          </div>
         </div>
-      </div>
+      </Card>
 
       {/* Revenue Potential (Styled Premium Purple Card) */}
       {/* <div className="bg-primary text-primary-foreground p-5 rounded-2xl shadow-md flex flex-col justify-between h-28 relative overflow-hidden group">
@@ -282,7 +282,6 @@ export default function ServicesPage() {
       ) : (
         <div className="rounded-2xl border border-border bg-card divide-y divide-border/60 overflow-hidden shadow-sm">
           {filteredAndSortedServices.map((service) => {
-            const imageSrc = service.image || "/services/default.png";
             const pricingText =
               service.pricingModel === "flat"
                 ? "flat"
@@ -290,25 +289,20 @@ export default function ServicesPage() {
                   ? "per guest"
                   : "hr";
 
+            const IconComponent = getServiceIcon(service.category, service.name);
+            const cardColor = service.color || "#6366F1";
+
             return (
               <div
                 key={service._id}
                 className="flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4 hover:bg-muted/20 transition-colors duration-150"
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <div className="relative h-12 w-12 rounded-xl bg-muted overflow-hidden shrink-0 border">
-                    <img
-                      src={imageSrc}
-                      alt={service.name}
-                      className="h-full w-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = `https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800`;
-                      }}
-                    />
-                    <div
-                      className="absolute bottom-0 left-0 right-0 h-1"
-                      style={{ backgroundColor: service.color }}
-                    />
+                  <div 
+                    className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 border border-border/50"
+                    style={{ backgroundColor: `${cardColor}15`, color: cardColor }}
+                  >
+                    <IconComponent className="h-5 w-5" />
                   </div>
 
                   <div className="space-y-1 min-w-0 flex-1">

@@ -133,145 +133,152 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="container mx-auto pb-10 max-w-5xl">
-      <div className="mb-8">
+    <div className="container mx-auto max-w-7xl space-y-6 pb-24">
+      <div>
         <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Settings</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Manage your account settings, preferences, and subscription.
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
         {/* Sidebar Navigation */}
-        <div className="w-full md:w-64 shrink-0">
-          <nav className="flex md:flex-col gap-1 overflow-x-auto pb-4 md:pb-0 hide-scrollbar">
+        <div className="w-full md:w-64 shrink-0 bg-card border border-border/80 rounded-2xl p-2 shadow-xs">
+          <nav className="flex md:flex-col gap-1 overflow-x-auto hide-scrollbar">
             <button
               onClick={() => setActiveTab("profile")}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap",
+                "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
                 activeTab === "profile" 
-                  ? "bg-primary/10 text-primary" 
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-primary text-primary-foreground shadow-xs" 
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
-              <User className="h-4 w-4" />
+              <User className="h-4 w-4 shrink-0" />
               Profile & Preferences
             </button>
             <button
               onClick={() => setActiveTab("security")}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap",
+                "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
                 activeTab === "security" 
-                  ? "bg-primary/10 text-primary" 
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-primary text-primary-foreground shadow-xs" 
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
-              <Shield className="h-4 w-4" />
+              <Shield className="h-4 w-4 shrink-0" />
               Security
             </button>
             <button
               onClick={() => setActiveTab("subscription")}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap",
+                "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
                 activeTab === "subscription" 
-                  ? "bg-primary/10 text-primary" 
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-primary text-primary-foreground shadow-xs" 
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
-              <CreditCard className="h-4 w-4" />
+              <CreditCard className="h-4 w-4 shrink-0" />
               Subscription
             </button>
           </nav>
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 space-y-6">
+        <div className="flex-1 space-y-6 w-full">
           
           {/* Profile Details Tab */}
           {activeTab === "profile" && (
-            <Card className="rounded-2xl shadow-sm border-0 bg-card">
+            <Card className="rounded-2xl border border-border/80 bg-card shadow-xs overflow-hidden">
               <form onSubmit={handleProfileSubmit(onProfileSave)}>
-                <CardHeader>
-                  <CardTitle>Profile & Preferences</CardTitle>
-                  <CardDescription>
-                    Update your business details and localization settings.
+                <CardHeader className="p-6 sm:p-7 border-b border-border/60">
+                  <CardTitle className="text-xl font-extrabold">Profile & Preferences</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm mt-1">
+                    Update your business details, contact information, and localization settings.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                
+                <CardContent className="p-6 sm:p-7 space-y-6">
                   
                   {profileMessage && (
                     <div className={cn(
-                      "p-3 rounded-md flex items-center gap-2 text-sm",
-                      profileMessage.type === "success" ? "bg-emerald-500/10 text-emerald-600" : "bg-rose-500/10 text-rose-600"
+                      "p-3.5 rounded-xl flex items-center gap-2.5 text-sm font-medium border",
+                      profileMessage.type === "success" 
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" 
+                        : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
                     )}>
-                      {profileMessage.type === "success" ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                      {profileMessage.text}
+                      {profileMessage.type === "success" ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : <AlertCircle className="h-4 w-4 shrink-0" />}
+                      <span>{profileMessage.text}</span>
                     </div>
                   )}
 
                   {/* Avatar Selection */}
                   <div className="space-y-3">
-                    <Label>Profile Avatar</Label>
-                    <div className="flex flex-wrap gap-3">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Profile Avatar</Label>
+                    <div className="flex flex-wrap gap-3 p-3 rounded-xl border border-border/60 bg-muted/20">
                       {AVATARS.map((avatar) => (
                         <button
                           key={avatar}
                           type="button"
                           onClick={() => setProfileValue("avatarId", avatar, { shouldDirty: true })}
                           className={cn(
-                            "h-12 w-12 rounded-full border-2 transition-all overflow-hidden bg-primary/10 flex items-center justify-center text-primary font-bold",
-                            selectedAvatar === avatar ? "border-primary ring-2 ring-primary/20 ring-offset-2 ring-offset-background scale-110" : "border-transparent hover:border-primary/50 opacity-70 hover:opacity-100"
+                            "h-12 w-12 rounded-full border-2 transition-all cursor-pointer overflow-hidden bg-primary/10 flex items-center justify-center text-primary font-bold shadow-2xs",
+                            selectedAvatar === avatar 
+                              ? "border-primary ring-2 ring-primary/20 ring-offset-2 ring-offset-background scale-110" 
+                              : "border-transparent hover:border-primary/50 opacity-70 hover:opacity-100"
                           )}
                         >
-                          {/* Placeholder for actual SVG/Image. Since we are using preset IDs, we can map to a placeholder text or icon for now */}
-                          <span className="text-xs uppercase">{avatar.replace('avatar-', 'A')}</span>
+                          <span className="text-xs font-extrabold">{avatar.replace('avatar-', 'A')}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
+                      <Label htmlFor="email" className="text-xs font-semibold">Email Address</Label>
                       <Input
                         id="email"
                         type="email"
                         value={profile?.email || ""}
                         disabled
-                        className="bg-muted/50"
+                        className="bg-muted/50 font-medium cursor-not-allowed opacity-80"
                       />
-                      <p className="text-[10px] text-muted-foreground">Email cannot be changed.</p>
+                      <p className="text-[11px] text-muted-foreground">Email cannot be changed.</p>
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="ownerName">Owner Name</Label>
+                      <Label htmlFor="ownerName" className="text-xs font-semibold">Owner Name</Label>
                       <Input
                         id="ownerName"
+                        placeholder="e.g. Alex Morgan"
                         {...registerProfile("ownerName", { required: true })}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="businessName">Business Name</Label>
+                      <Label htmlFor="businessName" className="text-xs font-semibold">Business Name</Label>
                       <Input
                         id="businessName"
+                        placeholder="e.g. Apex Events Studio"
                         {...registerProfile("businessName", { required: true })}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone" className="text-xs font-semibold">Phone Number</Label>
                       <Input
                         id="phone"
+                        placeholder="+1 (555) 000-0000"
                         {...registerProfile("phone")}
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="currency">Currency</Label>
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="currency" className="text-xs font-semibold">Default Currency</Label>
                       <select
                         id="currency"
-                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm shadow-2xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
                         {...registerProfile("currency")}
                       >
                         <option value="USD">USD ($)</option>
@@ -282,37 +289,41 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-3 pt-4 border-t">
-                    <h3 className="text-sm font-semibold">Location</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4 pt-6 border-t border-border/60">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Location & Address</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="country">Country</Label>
+                        <Label htmlFor="country" className="text-xs font-semibold">Country</Label>
                         <Input
                           id="country"
+                          placeholder="e.g. United States"
                           {...registerProfile("country")}
                         />
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="state">State / Region</Label>
+                        <Label htmlFor="state" className="text-xs font-semibold">State / Region</Label>
                         <Input
                           id="state"
+                          placeholder="e.g. California"
                           {...registerProfile("state")}
                         />
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="city">City</Label>
+                        <Label htmlFor="city" className="text-xs font-semibold">City</Label>
                         <Input
                           id="city"
+                          placeholder="e.g. Los Angeles"
                           {...registerProfile("city")}
                         />
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="pincode">Postal / Pincode</Label>
+                        <Label htmlFor="pincode" className="text-xs font-semibold">Postal / Pincode</Label>
                         <Input
                           id="pincode"
+                          placeholder="e.g. 90210"
                           {...registerProfile("pincode")}
                         />
                       </div>
@@ -320,11 +331,11 @@ export default function SettingsPage() {
                   </div>
 
                 </CardContent>
-                <CardFooter className="border-t bg-muted/10 p-4 rounded-b-2xl flex justify-end">
-                  <Button type="submit" disabled={isSavingProfile}>
+                <CardFooter className="border-t border-border/60 bg-muted/20 px-6 sm:px-7 py-4 rounded-b-2xl flex justify-end">
+                  <Button type="submit" disabled={isSavingProfile} className="px-6 rounded-xl font-bold gap-2 cursor-pointer">
                     {isSavingProfile ? "Saving..." : (
                       <>
-                        <Save className="mr-2 h-4 w-4" /> Save Changes
+                        <Save className="h-4 w-4" /> Save Changes
                       </>
                     )}
                   </Button>
@@ -335,54 +346,59 @@ export default function SettingsPage() {
 
           {/* Security Tab */}
           {activeTab === "security" && (
-            <Card className="rounded-2xl shadow-sm border-0 bg-card">
+            <Card className="rounded-2xl border border-border/80 bg-card shadow-xs overflow-hidden">
               <form onSubmit={handleSecuritySubmit(onSecuritySave)}>
-                <CardHeader>
-                  <CardTitle>Security</CardTitle>
-                  <CardDescription>
-                    Update your password to keep your account secure.
+                <CardHeader className="p-6 sm:p-7 border-b border-border/60">
+                  <CardTitle className="text-xl font-extrabold">Security Settings</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm mt-1">
+                    Update your account password to ensure maximum security.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-6 sm:p-7 space-y-5">
                   {securityMessage && (
                     <div className={cn(
-                      "p-3 rounded-md flex items-center gap-2 text-sm",
-                      securityMessage.type === "success" ? "bg-emerald-500/10 text-emerald-600" : "bg-rose-500/10 text-rose-600"
+                      "p-3.5 rounded-xl flex items-center gap-2.5 text-sm font-medium border",
+                      securityMessage.type === "success" 
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" 
+                        : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
                     )}>
-                      {securityMessage.type === "success" ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                      {securityMessage.text}
+                      {securityMessage.type === "success" ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : <AlertCircle className="h-4 w-4 shrink-0" />}
+                      <span>{securityMessage.text}</span>
                     </div>
                   )}
 
                   <div className="space-y-2 max-w-md">
-                    <Label htmlFor="currentPassword">Current Password</Label>
+                    <Label htmlFor="currentPassword" className="text-xs font-semibold">Current Password</Label>
                     <Input
                       id="currentPassword"
                       type="password"
+                      placeholder="••••••••"
                       {...registerSecurity("currentPassword", { required: true })}
                     />
                   </div>
                   
                   <div className="space-y-2 max-w-md">
-                    <Label htmlFor="newPassword">New Password</Label>
+                    <Label htmlFor="newPassword" className="text-xs font-semibold">New Password</Label>
                     <Input
                       id="newPassword"
                       type="password"
+                      placeholder="••••••••"
                       {...registerSecurity("newPassword", { required: true, minLength: 6 })}
                     />
                   </div>
                   
                   <div className="space-y-2 max-w-md">
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                    <Label htmlFor="confirmPassword" className="text-xs font-semibold">Confirm New Password</Label>
                     <Input
                       id="confirmPassword"
                       type="password"
+                      placeholder="••••••••"
                       {...registerSecurity("confirmPassword", { required: true })}
                     />
                   </div>
                 </CardContent>
-                <CardFooter className="border-t bg-muted/10 p-4 rounded-b-2xl flex justify-end">
-                  <Button type="submit" disabled={isSavingSecurity}>
+                <CardFooter className="border-t border-border/60 bg-muted/20 px-6 sm:px-7 py-4 rounded-b-2xl flex justify-end">
+                  <Button type="submit" disabled={isSavingSecurity} className="px-6 rounded-xl font-bold gap-2 cursor-pointer">
                     {isSavingSecurity ? "Updating..." : "Update Password"}
                   </Button>
                 </CardFooter>
@@ -392,24 +408,24 @@ export default function SettingsPage() {
 
           {/* Subscription Tab */}
           {activeTab === "subscription" && (
-            <Card className="rounded-2xl shadow-sm border-0 bg-card">
-              <CardHeader>
-                <CardTitle>Subscription Plan</CardTitle>
-                <CardDescription>
-                  View your current plan and usage.
+            <Card className="rounded-2xl border border-border/80 bg-card shadow-xs overflow-hidden">
+              <CardHeader className="p-6 sm:p-7 border-b border-border/60">
+                <CardTitle className="text-xl font-extrabold">Subscription Plan</CardTitle>
+                <CardDescription className="text-xs sm:text-sm mt-1">
+                  View your current plan details and feature allocations.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="p-6 border rounded-xl flex items-center justify-between bg-gradient-to-br from-primary/5 to-transparent">
+              <CardContent className="p-6 sm:p-7">
+                <div className="p-6 border border-border/80 rounded-2xl flex items-center justify-between bg-gradient-to-br from-primary/5 to-transparent">
                   <div>
-                    <h3 className="text-xl font-bold text-foreground">
+                    <h3 className="text-xl font-extrabold text-foreground">
                       {profile?.subscription || "FREE"} Plan
                     </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      You are currently on the free tier. Basic features included.
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                      You are currently on the free tier. Essential event management features included.
                     </p>
                   </div>
-                  <Button variant="outline" className="shrink-0" disabled>
+                  <Button variant="outline" className="shrink-0 rounded-xl font-bold cursor-not-allowed opacity-70" disabled>
                     Upgrade Plan
                   </Button>
                 </div>

@@ -6,8 +6,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number) {
-  let currency = "USD";
-  let locale = "en-US";
+  let currency = "INR";
+  let locale = "en-IN";
   
   try {
     const userStr = localStorage.getItem("user");

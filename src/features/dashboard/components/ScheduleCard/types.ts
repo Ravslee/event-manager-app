@@ -3,12 +3,14 @@ export interface ScheduleItem {
   time: string;
   title: string;
   subtitle: string;
-  status: "IN_PROGRESS" | "UPCOMING" | "DRAFT";
+  status: "IN_PROGRESS" | "UPCOMING" | "DRAFT" | "COMPLETED";
   participants?: string[];
 }
 
 export interface ScheduleCardProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   items: ScheduleItem[];
+  className?: string;
 }
+

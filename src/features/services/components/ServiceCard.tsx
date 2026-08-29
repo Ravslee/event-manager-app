@@ -1,4 +1,4 @@
-import { Edit2, Trash2, CheckCircle2 } from "lucide-react";
+import { Edit2, Trash2, CheckCircle2, Camera, Video, Music, Utensils, Palette, Shield, Truck, Briefcase, Sparkles, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn, formatCurrency } from "@/lib/utils";
 
@@ -11,61 +11,84 @@ interface ServiceCardProps {
     color: string;
     category: string;
     pricingModel: string;
-    image?: string;
     isActive?: boolean;
   };
   onEdit: (service: any) => void;
   onDelete: (id: string) => void;
 }
 
+export function getServiceIcon(category?: string, name?: string): LucideIcon {
+  const cat = (category || "").toLowerCase();
+  const nam = (name || "").toLowerCase();
+
+  if (cat.includes("photo") || nam.includes("photo") || nam.includes("camera")) return Camera;
+  if (cat.includes("video") || nam.includes("video") || nam.includes("film")) return Video;
+  if (cat.includes("dj") || cat.includes("sound") || cat.includes("music") || cat.includes("av") || nam.includes("dj") || nam.includes("sound")) return Music;
+  if (cat.includes("cater") || cat.includes("din") || cat.includes("food") || nam.includes("cater") || nam.includes("food")) return Utensils;
+  if (cat.includes("decor") || cat.includes("style") || cat.includes("design") || nam.includes("decor") || nam.includes("stage")) return Palette;
+  if (cat.includes("secur") || cat.includes("operation") || nam.includes("guard")) return Shield;
+  if (cat.includes("logist") || cat.includes("transport") || nam.includes("car")) return Truck;
+  if (nam.includes("anchor") || nam.includes("host") || nam.includes("mua") || nam.includes("makeup")) return Sparkles;
+  
+  return Briefcase;
+}
+
 export default function ServiceCard({ service, onEdit, onDelete }: ServiceCardProps) {
-  // Build direct image paths (pre-seeded services match static assets we generated)
-  const imageSrc = service.image || "/services/default.png";
   const pricingText = service.pricingModel === "flat" ? "flat" : service.pricingModel === "per_guest" ? "per guest" : "hr";
+  const IconComponent = getServiceIcon(service.category, service.name);
+  const cardColor = service.color || "#6366F1";
 
   return (
-    <div className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col h-full">
-      {/* Visual Header Image */}
-      <div className="relative h-32 w-full bg-muted overflow-hidden">
-        <img
-          src={imageSrc}
-          alt={service.name}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          onError={(e) => {
-            // Fallback for image loading error
-            (e.target as HTMLImageElement).src = `https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800`;
-          }}
-        />
+    <div className="group overflow-hidden rounded-2xl border border-border bg-card shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+      {/* Category Icon & Theme Color Banner Header */}
+      <div 
+        className="relative h-24 w-full p-4 flex items-center justify-between overflow-hidden"
+        style={{
+          background: `linear-gradient(135deg, ${cardColor}22 0%, ${cardColor}08 100%)`,
+        }}
+      >
+        {/* Decorative Background Icon */}
+        <div className="absolute -right-3 -bottom-3 opacity-10 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 pointer-events-none">
+          <IconComponent className="h-28 w-28" style={{ color: cardColor }} />
+        </div>
+
+        {/* Icon Badge */}
+        <div 
+          className="h-12 w-12 rounded-2xl flex items-center justify-center shadow-xs border border-white/20 dark:border-white/10 shrink-0 z-10 backdrop-blur-xs"
+          style={{ backgroundColor: `${cardColor}20`, color: cardColor }}
+        >
+          <IconComponent className="h-6 w-6" />
+        </div>
 
         {/* Status Tag */}
-        <div className="absolute right-3 top-3">
+        <div className="z-10">
           <span
             className={cn(
-              "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm",
+              "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border shadow-xs",
               service.isActive
-                ? "bg-emerald-500 text-white"
-                : "bg-orange-500 text-white"
+                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                : "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20"
             )}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+            <span className={cn("h-1.5 w-1.5 rounded-full", service.isActive ? "bg-emerald-500 animate-pulse" : "bg-orange-500")} />
             {service.isActive ? "Active" : "Inactive"}
           </span>
         </div>
 
-        {/* Accent Color Band */}
+        {/* Accent Color Bottom Bar */}
         <div
           className="absolute bottom-0 left-0 right-0 h-1"
-          style={{ backgroundColor: service.color }}
+          style={{ backgroundColor: cardColor }}
         />
       </div>
 
       {/* Details Area */}
       <div className="flex-1 p-4 flex flex-col">
-        {/* Category */}
+        {/* Category Badge */}
         <div className="flex items-center gap-1.5 mb-2">
           <span
-            className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded"
-            style={{ backgroundColor: `${service.color}15`, color: service.color }}
+            className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md"
+            style={{ backgroundColor: `${cardColor}15`, color: cardColor }}
           >
             {service.category}
           </span>
@@ -87,20 +110,20 @@ export default function ServiceCard({ service, onEdit, onDelete }: ServiceCardPr
         </p>
 
         {/* Footer Area with Card Actions */}
-        <div className="border-t border-border pt-3 flex items-center justify-between mt-auto">
+        <div className="border-t border-border/60 pt-3 flex items-center justify-between mt-auto">
           {/* Metadata */}
           <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
             <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-            <span>High-Tech Certified</span>
+            <span>Verified Service</span>
           </div>
 
           {/* Edit/Delete Actions */}
-          <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity">
             <Button
               size="icon"
               variant="ghost"
               onClick={() => onEdit(service)}
-              className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
             >
               <Edit2 className="h-3.5 w-3.5" />
             </Button>
@@ -108,7 +131,7 @@ export default function ServiceCard({ service, onEdit, onDelete }: ServiceCardPr
               size="icon"
               variant="ghost"
               onClick={() => onDelete(service._id)}
-              className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/5"
+              className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </Button>

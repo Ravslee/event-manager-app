@@ -6,15 +6,13 @@ import {
   ArrowLeft,
   Download,
   Mail,
-  RefreshCw,
   Building,
-  User,
   MapPin,
   Phone,
-  Clock,
   Plus,
   Trash2,
-  DollarSign
+  IndianRupee,
+  Receipt
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -143,33 +141,36 @@ export default function PaymentDetailsPage() {
   const tax = Math.max(0, payment.totalAmount - servicesTotal); // If totalAmount > servicesTotal, show diff as tax/fees
 
   return (
-    <div className="container mx-auto pb-10 space-y-6">
+    <div className="container mx-auto pb-24 space-y-6">
       {/* Top Header */}
-      <div className="flex items-center gap-4 border-b pb-6">
-        <Button variant="outline" size="icon" onClick={() => navigate("/payments")} className="shrink-0 h-10 w-10">
-          <ArrowLeft className="h-5 w-5 text-muted-foreground" />
-        </Button>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-2xl font-bold tracking-tight text-foreground line-clamp-1">
-              Payment details
-            </h1>
-            <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-semibold border", getStatusBadgeClass(payment.status))}>
-              {payment.status.toUpperCase()}
-            </span>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-6">
+        <div className="flex items-center gap-3 min-w-0">
+          <Button variant="outline" size="icon" onClick={() => navigate("/payments")} className="shrink-0 h-9 w-9 sm:h-10 sm:w-10">
+            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+          </Button>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground line-clamp-1">
+                Payment details
+              </h1>
+              <span className={cn("px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold border", getStatusBadgeClass(payment.status))}>
+                {payment.status.toUpperCase()}
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">
+              Associated with event <span className="font-medium text-foreground">{payment.eventId?.title}</span>
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-1">
-            Associated with event <span className="font-medium text-foreground">{payment.eventId?.title}</span>
-          </p>
         </div>
-        <div className="flex gap-2 shrink-0">
-          <Button variant="outline" className="h-10 text-xs">
-            <Download className="mr-2 h-4 w-4" />
+
+        <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+          <Button variant="outline" className="h-9 sm:h-10 text-xs flex-1 sm:flex-initial">
+            <Download className="mr-1.5 h-3.5 w-3.5" />
             Invoice
           </Button>
           {dueAmount > 0 && (
-            <Button className="h-10 text-xs" onClick={openTransactionModal}>
-              <Plus className="mr-2 h-4 w-4" />
+            <Button className="h-9 sm:h-10 text-xs flex-1 sm:flex-initial" onClick={openTransactionModal}>
+              <Plus className="mr-1.5 h-3.5 w-3.5" />
               Add Payment
             </Button>
           )}
@@ -290,15 +291,15 @@ export default function PaymentDetailsPage() {
               <CardTitle className="text-lg">Payment Timeline</CardTitle>
             </CardHeader>
             <CardContent className="p-5 flex-1 overflow-y-auto">
-              <div className="relative pl-6 border-l border-muted-foreground/20 space-y-8 pb-4">
+              <div className="relative pl-8 space-y-8 pb-4 before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-border/60">
                 {/* Event Creation Entry */}
-                <div className="relative">
-                  <div className="absolute -left-[31px] bg-background border-2 border-primary/20 rounded-full p-1.5 shrink-0">
-                    <Plus className="h-3.5 w-3.5 text-primary/60" />
+                <div className="relative flex items-start gap-3">
+                  <div className="absolute -left-8 top-0.5 h-7 w-7 rounded-full bg-background border-2 border-primary/40 flex items-center justify-center shadow-xs shrink-0 z-10">
+                    <Receipt className="h-3.5 w-3.5 text-primary" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h4 className="text-sm font-bold text-foreground">Invoice Created</h4>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {format(new Date(payment.createdAt), "MMM d, yyyy h:mm a")}
                     </p>
                     <p className="text-xs text-muted-foreground/80 mt-1">Generated automatically on event creation.</p>
@@ -307,31 +308,34 @@ export default function PaymentDetailsPage() {
 
                 {/* Transactions */}
                 {payment.transactions.map((txn) => (
-                  <div key={txn._id} className="relative group">
-                    <div className="absolute -left-[31px] bg-background border-2 border-emerald-500/20 rounded-full p-1.5 shrink-0">
-                      <DollarSign className="h-3.5 w-3.5 text-emerald-600" />
+                  <div key={txn._id} className="relative flex items-start gap-3 group">
+                    <div className="absolute -left-8 top-0.5 h-7 w-7 rounded-full bg-background border-2 border-emerald-500/50 flex items-center justify-center shadow-xs shrink-0 z-10">
+                      <IndianRupee className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                     </div>
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <h4 className="text-sm font-bold text-foreground">Payment Received</h4>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {format(new Date(txn.transactionDate), "MMM d, yyyy h:mm a")}
-                        </p>
-                        <div className="text-xs text-muted-foreground/80 mt-1.5 p-2 bg-muted/30 rounded-md border border-border/40 space-y-1">
-                          <div><span className="font-medium text-foreground">Amount:</span> {formatCurrency(txn.amount)}</div>
-                          <div><span className="font-medium text-foreground">Method:</span> {txn.paymentMethod}</div>
-                          {txn.referenceNumber && <div><span className="font-medium text-foreground">Ref:</span> {txn.referenceNumber}</div>}
-                          {txn.notes && <div><span className="font-medium text-foreground">Notes:</span> {txn.notes}</div>}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <h4 className="text-sm font-bold text-foreground">Payment Received</h4>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {format(new Date(txn.transactionDate), "MMM d, yyyy h:mm a")}
+                          </p>
                         </div>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-7 w-7 text-rose-500 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity shrink-0 cursor-pointer"
+                          onClick={() => handleDeleteTransaction(txn._id)}
+                          title="Delete Transaction"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
                       </div>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-7 w-7 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => handleDeleteTransaction(txn._id)}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                      <div className="text-xs text-muted-foreground/90 mt-2 p-2.5 bg-muted/30 rounded-xl border border-border/50 space-y-1">
+                        <div className="flex justify-between items-center"><span className="font-semibold text-foreground">Amount:</span> <span className="font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(txn.amount)}</span></div>
+                        <div><span className="font-medium text-foreground">Method:</span> {txn.paymentMethod}</div>
+                        {txn.referenceNumber && <div><span className="font-medium text-foreground">Ref:</span> {txn.referenceNumber}</div>}
+                        {txn.notes && <div><span className="font-medium text-foreground">Notes:</span> {txn.notes}</div>}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -360,7 +364,7 @@ export default function PaymentDetailsPage() {
 
           <form onSubmit={handleSubmit(onSubmitTransaction)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount ($)</Label>
+              <Label htmlFor="amount">Amount (₹)</Label>
               <Input
                 id="amount"
                 type="number"

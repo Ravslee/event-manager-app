@@ -1,13 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: 'Nunito', sans-serif;
-    --font-sans: 'Nunito', sans-serif;
+    --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -55,8 +55,7 @@
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(49.1% 0.27 292.581);
-    /* --primary: oklch(20.463% 0.00002 271.152); */
+    --primary: oklch(0.205 0 0);
     --primary-foreground: oklch(0.985 0 0);
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
@@ -67,8 +66,8 @@
     --destructive: oklch(0.577 0.245 27.325);
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
+    --ring: oklch(0.205 0 0);
+    --chart-1: oklch(0.205 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
     --chart-4: oklch(0.371 0 0);
@@ -81,7 +80,7 @@
     --sidebar-accent: oklch(0.97 0 0);
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    --sidebar-ring: oklch(0.205 0 0);
 }
 
 .dark {
@@ -91,8 +90,8 @@
     --card-foreground: oklch(0.985 0 0);
     --popover: oklch(0.18 0.01 270);
     --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(58% 0.25 292.581);
-    --primary-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.985 0 0);
+    --primary-foreground: oklch(0.145 0 0);
     --secondary: oklch(0.24 0.01 270);
     --secondary-foreground: oklch(0.985 0 0);
     --muted: oklch(0.22 0.01 270);
@@ -102,26 +101,26 @@
     --destructive: oklch(0.704 0.191 22.216);
     --border: oklch(1 0 0 / 12%);
     --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
+    --ring: oklch(0.985 0 0);
+    --chart-1: oklch(0.985 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
     --chart-4: oklch(0.371 0 0);
     --chart-5: oklch(0.269 0 0);
     --sidebar: oklch(0.16 0.01 270);
     --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(58% 0.25 292.581);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.985 0 0);
+    --sidebar-primary-foreground: oklch(0.145 0 0);
     --sidebar-accent: oklch(0.24 0.01 270);
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 12%);
-    --sidebar-ring: oklch(0.556 0 0);
+    --sidebar-ring: oklch(0.985 0 0);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     scrollbar-width: thin;
     scrollbar-color: oklch(0.8 0 0) transparent;
   }
@@ -130,11 +129,25 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   html {
     @apply font-sans;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  
+  /* Dropdowns & Select Dark / Light Theme Enforcement */
+  select {
+    color-scheme: light dark;
+  }
+  select option {
+    background-color: var(--card);
+    color: var(--card-foreground);
+    padding: 8px 12px;
+  }
+  .dark select option {
+    background-color: oklch(0.18 0.01 270) !important;
+    color: oklch(0.985 0 0) !important;
   }
 }
 
@@ -155,7 +168,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(49.1% 0.27 292.581);
+  background: oklch(0.205 0 0);
 }
 
 .dark ::-webkit-scrollbar-thumb {
@@ -163,5 +176,5 @@
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: oklch(58% 0.25 292.581);
+  background: oklch(0.985 0 0);
 }

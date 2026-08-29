@@ -4,11 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ArrowLeft,
-  Share2,
   Save,
-  User,
-  History,
-  Image as ImageIcon,
   Check,
   ChevronRight,
   TrendingUp,
@@ -19,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { cn, formatCurrency } from "@/lib/utils";
 import { serviceSchema } from "../schemas/service.schema";
 import { getService, createService, updateService } from "../api/service.api";
+import { getServiceIcon } from "../components/ServiceCard";
+import { FloatingActionButton } from "@/components/common/FloatingActionButton";
 
 const categoryOptions = [
   "Hospitality & Dining",
@@ -30,22 +28,12 @@ const categoryOptions = [
   "General",
 ];
 
-const imagePresets = [
-  { value: "/services/catering.png", label: "Catering Mockup" },
-  { value: "/services/av_equipment.png", label: "AV Equipment Mockup" },
-  { value: "/services/security.png", label: "Event Security Mockup" },
-  { value: "/services/photography.png", label: "Photography Mockup" },
-  { value: "/services/decor.png", label: "Venue Decor Mockup" },
-  { value: "/services/transport.png", label: "Transportation Mockup" },
-];
-
 export default function ServiceDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isNew = id === "new";
 
   const [loading, setLoading] = useState(!isNew);
-  const [showPresets, setShowPresets] = useState(false);
 
   const {
     register,
@@ -71,7 +59,6 @@ export default function ServiceDetailsPage() {
 
   const watchName = watch("name") || (isNew ? "New Service" : "Service Details");
   const watchIsActive = watch("isActive");
-  const watchImage = watch("image");
   const watchColor = watch("color");
   const watchPricingModel = watch("pricingModel");
 
@@ -103,21 +90,7 @@ export default function ServiceDetailsPage() {
   }, [id, isNew, reset]);
 
   const onSubmit = (data: any) => {
-    // Fill preset image default if empty
-    let finalImage = data.image;
-    if (!finalImage) {
-      const cat = data.category.toLowerCase();
-      if (cat.includes("catering") || cat.includes("hospitality")) finalImage = "/services/catering.png";
-      else if (cat.includes("av") || cat.includes("production")) finalImage = "/services/av_equipment.png";
-      else if (cat.includes("security") || cat.includes("operation")) finalImage = "/services/security.png";
-      else if (cat.includes("photo") || cat.includes("media")) finalImage = "/services/photography.png";
-      else if (cat.includes("decor") || cat.includes("style")) finalImage = "/services/decor.png";
-      else if (cat.includes("transport") || cat.includes("logistics")) finalImage = "/services/transport.png";
-      else finalImage = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800";
-    }
-
-    const payload = { ...data, image: finalImage };
-
+    const payload = { ...data };
     const action = isNew ? createService(payload) : updateService(id!, payload);
 
     action
@@ -178,16 +151,6 @@ export default function ServiceDetailsPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 self-start md:self-auto">
-            <Button type="button" variant="outline" className="gap-1.5 h-10 rounded-xl">
-              <Share2 className="h-4 w-4" />
-              Share
-            </Button>
-            <Button type="submit" disabled={isSubmitting} className="gap-1.5 h-10 px-5 bg-primary text-primary-foreground hover:bg-primary/95 shadow-sm rounded-xl">
-              <Save className="h-4 w-4" />
-              {isSubmitting ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
         </div>
 
         {/* 2-Column Responsive Layout */}
@@ -409,7 +372,7 @@ export default function ServiceDetailsPage() {
                   onClick={() => setValue("isActive", !watchIsActive)}
                   className={cn(
                     "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out outline-none",
-                    watchIsActive ? "bg-primary" : "bg-muted"
+                    watchIsActive ? "bg-emerald-500 shadow-xs" : "bg-muted"
                   )}
                 >
                   <span
@@ -473,79 +436,58 @@ export default function ServiceDetailsPage() {
               </button>
             </div> */}
 
-            {/* Display Media Card */}
+            {/* Service Visual Preview Card */}
             <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
               <div className="space-y-1 border-b pb-2">
                 <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                  Display Media
+                  Live Card Preview
                 </h3>
                 <p className="text-[10px] text-muted-foreground">
-                  This image appears in the client-facing proposal portal.
+                  How this service appears in event proposals and catalogues.
                 </p>
               </div>
 
-              {/* Renders Selected preset image */}
-              <div className="rounded-xl overflow-hidden h-40 bg-muted border relative shadow-inner">
-                {watchImage ? (
-                  <img src={watchImage} alt="Service Display" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-muted-foreground text-xs gap-1.5 p-4">
-                    <ImageIcon className="h-8 w-8 stroke-1" />
-                    <span>No display image selected</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Preset selectors overlay button */}
-              <div className="relative">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowPresets(!showPresets)}
-                  className="w-full border-dashed h-10 gap-1.5 rounded-xl text-muted-foreground hover:text-foreground"
-                >
-                  <ImageIcon className="h-4 w-4" />
-                  Replace Asset
-                </Button>
-
-                {showPresets && (
-                  <div className="absolute right-0 left-0 bottom-12 z-10 border border-border bg-popover text-popover-foreground shadow-xl rounded-xl p-3 animate-in fade-in slide-in-from-bottom-2 duration-200">
-                    <div className="flex items-center justify-between border-b pb-1.5 mb-2">
-                      <span className="text-xs font-bold">Select Preset Cover</span>
-                      <button
-                        type="button"
-                        onClick={() => setShowPresets(false)}
-                        className="text-[10px] font-bold text-muted-foreground hover:text-foreground"
+              {/* Live Preview Box */}
+              {(() => {
+                const CategoryIcon = getServiceIcon(watch("category"), watchName);
+                const previewColor = watchColor || "#6366F1";
+                return (
+                  <div 
+                    className="rounded-2xl border border-border p-4 flex items-center gap-4 relative overflow-hidden"
+                    style={{
+                      background: `linear-gradient(135deg, ${previewColor}18 0%, ${previewColor}05 100%)`,
+                    }}
+                  >
+                    <div 
+                      className="h-12 w-12 rounded-xl flex items-center justify-center shrink-0 border border-white/20 shadow-xs"
+                      style={{ backgroundColor: `${previewColor}25`, color: previewColor }}
+                    >
+                      <CategoryIcon className="h-6 w-6" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span 
+                        className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded"
+                        style={{ backgroundColor: `${previewColor}20`, color: previewColor }}
                       >
-                        Close
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {imagePresets.map((preset) => (
-                        <button
-                          key={preset.value}
-                          type="button"
-                          onClick={() => {
-                            setValue("image", preset.value);
-                            setShowPresets(false);
-                          }}
-                          className={cn(
-                            "relative aspect-video rounded overflow-hidden border border-border transition-all hover:scale-105 shadow-sm bg-muted",
-                            watchImage === preset.value && "ring-2 ring-primary border-transparent"
-                          )}
-                          title={preset.label}
-                        >
-                          <img src={preset.value} className="w-full h-full object-cover" alt="" />
-                          <div className="absolute inset-0 bg-black/10 hover:bg-black/0 transition-colors" />
-                        </button>
-                      ))}
+                        {watch("category") || "General"}
+                      </span>
+                      <h4 className="font-bold text-sm text-foreground truncate mt-1">{watchName}</h4>
+                      <p className="text-xs text-muted-foreground font-semibold">{formatCurrency(watch("price") || 0)}</p>
                     </div>
                   </div>
-                )}
-              </div>
+                );
+              })()}
             </div>
           </div>
         </div>
+
+        {/* Floating Save Action Button */}
+        <FloatingActionButton
+          type="submit"
+          icon={Save}
+          label={isSubmitting ? "Saving Service..." : isNew ? "Save Service" : "Save Changes"}
+          disabled={isSubmitting}
+        />
       </form>
     </div>
   );

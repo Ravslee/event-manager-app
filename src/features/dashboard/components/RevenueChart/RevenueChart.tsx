@@ -56,8 +56,8 @@ export default function RevenueChart({ chartData }: RevenueChartProps) {
             <Area
               type="monotone"
               dataKey="value"
-              stroke="#7c3aed"
-              fill="#ede9fe"
+              stroke="#2563eb"
+              fill="#dbeafe"
             />
           </AreaChart>
         </ResponsiveContainer>
