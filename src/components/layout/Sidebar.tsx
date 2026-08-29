@@ -10,10 +10,10 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "flex flex-col border-r bg-sidebar transition-all duration-300 z-30 shrink-0 select-none",
+        "flex flex-col border-r bg-sidebar transition-all duration-300 z-30 shrink-0 select-none overflow-hidden",
         collapsed
-          ? "w-14 sm:w-16 md:w-20"
-          : "w-64 md:w-72",
+          ? "w-0 border-r-0 lg:w-20 lg:border-r"
+          : "w-64 lg:w-72 border-r",
       )}
     >
       <Logo />

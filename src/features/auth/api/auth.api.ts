@@ -4,6 +4,8 @@ import {
   type LoginResponse,
   type RegisterRequest,
   type LoginRequest,
+  type RefreshTokenResponse,
+  type User,
 } from "../types/auth.types";
 
 export const AuthApi = {
@@ -21,4 +23,30 @@ export const AuthApi = {
 
     return data;
   },
+
+  refreshToken: async (refreshToken: string) => {
+    const { data } = await api.post<RefreshTokenResponse>("/auth/refresh", {
+      refreshToken,
+    });
+
+    return data;
+  },
+
+  logout: async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // Ignore network errors on logout call
+    }
+  },
+
+  getCurrentUser: async (): Promise<User | null> => {
+    try {
+      const { data } = await api.get<{ success?: boolean; data?: User; user?: User }>("/auth/me");
+      return data.data || data.user || null;
+    } catch {
+      return null;
+    }
+  },
 };
+

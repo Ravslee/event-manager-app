@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import { useSidebar } from "@/context/SidebarContext";
+import { useAuth } from "@/context/AuthContext";
 import api from "@/api/axios";
 
 import { getMyProfile } from "@/features/settings/api/settings.api";
@@ -18,6 +19,7 @@ interface SearchResultItem {
 
 export function Header() {
   const { toggleSidebar } = useSidebar();
+  const { user: authUser, logout, updateUser } = useAuth();
   const navigate = useNavigate();
 
   // Dark mode state
@@ -37,51 +39,27 @@ export function Header() {
 
   const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
 
-  // User & Profile State
-  const [user, setUser] = useState<any>(() => {
-    const userStr = localStorage.getItem("user");
-    return userStr ? JSON.parse(userStr) : null;
-  });
-
+  // Sync latest user profile on mount
   useEffect(() => {
-    // Fetch latest profile from backend on mount
     getMyProfile()
       .then((profileData) => {
         if (profileData) {
-          setUser((prev: any) => {
-            const updated = { ...(prev || {}), ...profileData };
-            localStorage.setItem("user", JSON.stringify(updated));
-            return updated;
-          });
+          updateUser(profileData);
         }
       })
       .catch(() => {});
+  }, [updateUser]);
 
-    const syncUser = () => {
-      const userStr = localStorage.getItem("user");
-      if (userStr) {
-        setUser(JSON.parse(userStr));
-      }
-    };
-
-    window.addEventListener("profileUpdated", syncUser);
-    window.addEventListener("storage", syncUser);
-
-    return () => {
-      window.removeEventListener("profileUpdated", syncUser);
-      window.removeEventListener("storage", syncUser);
-    };
-  }, []);
-
+  const user = authUser as any;
   const ownerName = user?.ownerName || user?.name || user?.fullName || (user?.email ? user.email.split("@")[0] : "Owner");
   const businessName = user?.businessName || user?.role || "Administrator";
 
   // Logout handler
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
+  const handleLogout = async () => {
+    await logout();
     navigate("/login");
   };
+
 
   // Search State & Live Navigation
   const [searchQuery, setSearchQuery] = useState("");

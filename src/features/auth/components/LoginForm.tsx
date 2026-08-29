@@ -7,26 +7,30 @@ import { useForm } from "react-hook-form";
 import type { LoginRequest } from "../types/auth.types";
 import { useLogin } from "../hooks/useLogin";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 export function LoginForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
-  const { register, handleSubmit } = useForm<LoginRequest>(); // Placeholder for form handling logic
+  const { register, handleSubmit } = useForm<LoginRequest>();
+  const loginMutation = useLogin();
 
-  const loginMutation = useLogin(); // Assuming you have a useLogin hook similar to useRegister
+  const from = (location.state as any)?.from?.pathname || "/dashboard";
 
   const onLoginSubmit = async (data: LoginRequest) => {
     try {
       const response: any = await loginMutation.mutateAsync(data);
-      localStorage.setItem("accessToken", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      navigate("/dashboard"); // Navigate to the dashboard or desired page after successful login
+      login(response);
+      navigate(from, { replace: true });
     } catch (error: any) {
       alert(error.response?.data?.message ?? "Login failed");
     }
   };
+
 
   return (
     <div className="flex items-center justify-center bg-background px-8">
