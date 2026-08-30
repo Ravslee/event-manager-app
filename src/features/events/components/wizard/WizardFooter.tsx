@@ -38,6 +38,17 @@ const WizardFooter: FC<WizardFooterProps> = ({
             Back
           </Button>
         )}
+        {!isEditing && !isLastStep && onSaveDraft && (
+          <Button
+            type="button"
+            onClick={onSaveDraft}
+            variant="outline"
+            className="h-8 sm:h-9 px-2.5 sm:px-4 text-xs sm:text-sm font-semibold rounded-xl gap-1 shrink-0"
+          >
+            <Save className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            Save Draft
+          </Button>
+        )}
 
         {/* Save button for instant update on intermediate steps when editing */}
         {isEditing && !isLastStep && onUpdate && (

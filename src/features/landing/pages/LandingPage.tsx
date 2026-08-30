@@ -5,7 +5,6 @@ import {
   ArrowRight, 
   CheckCircle2, 
   ShieldCheck, 
-  LogIn,
   LayoutDashboard,
   Zap,
   ChevronDown,
@@ -53,14 +52,14 @@ export default function LandingPage() {
   const faqs = [
     {
       q: "Who is NIVO built for?",
-      a: "NIVO is built specifically for Indian creative freelancers and solo professionals — including Photographers, Videographers, DJs, Anchor/MCs, Makeup Artists (MUA), Decorators, Mehendi Artists, and Sound Engineers."
+      a: "NIVO is built specifically for creative freelancers and solo professionals — including Photographers, Videographers, DJs, Anchor/MCs, Makeup Artists (MUA), Decorators, Mehendi Artists, and Sound Engineers."
     },
     {
-      q: "Does NIVO support Indian Rupees (₹) and advance token payments?",
-      a: "Yes! All prices, invoices, and analytics in NIVO default to Indian Rupees (₹). You can easily track advance token deposits (e.g. 30% or 50% advance), pending balances due on event day, and completed payments."
+      q: "Does NIVO support Rupees (₹) and advance token payments?",
+      a: "Yes! All prices, invoices, and analytics in NIVO default to Rupees (₹). You can easily track advance token deposits (e.g. 30% or 50% advance), pending balances due on event day, and completed payments."
     },
     {
-      q: "How does NIVO help during peak Indian wedding (Shaadi/Muhurat) seasons?",
+      q: "How does NIVO help during peak wedding seasons?",
       a: "During busy wedding dates, NIVO's visual calendar prevents accidental double-bookings. You can see confirmed, pending, and blocked dates at a glance so you never miss a client date."
     },
     {
@@ -79,9 +78,6 @@ export default function LandingPage() {
           {/* Brand Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <NivoLogo size="md" />
-            <span className="text-[9px] sm:text-[10px] font-extrabold uppercase px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 tracking-wider">
-              🇮🇳 India
-            </span>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -215,14 +211,14 @@ export default function LandingPage() {
             {/* Pill Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-2xs">
               <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 fill-primary" />
-              <span>Built for Indian Creative Freelancers</span>
+              <span>Built for Creative Freelancers</span>
             </div>
 
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.15] sm:leading-[1.1]">
               The #1 Booking & Billing App for <br className="hidden sm:inline" />
               <span className="bg-gradient-to-r from-primary via-slate-700 to-slate-900 dark:from-slate-100 dark:via-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
-                Indian Event Freelancers.
+                Event Freelancers.
               </span>
             </h1>
 
@@ -308,7 +304,7 @@ export default function LandingPage() {
           
           <div className="text-center space-y-2.5 max-w-2xl mx-auto px-2">
             <h2 className="text-2xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-              Built for every Indian creative professional.
+              Built for every creative professional.
             </h2>
             <p className="text-xs sm:text-base text-muted-foreground font-medium">
               Whether you are a solo artist or run a small crew, NIVO keeps your gig pipeline organized.
@@ -415,7 +411,7 @@ export default function LandingPage() {
           
           <div className="text-center space-y-2.5 max-w-2xl mx-auto px-2">
             <h2 className="text-2xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-              Loved by freelancers across India.
+              Loved by creative freelancers.
             </h2>
             <p className="text-xs sm:text-base text-muted-foreground font-medium">
               Here is how NIVO simplifies gig management for independent creators.
@@ -651,7 +647,7 @@ export default function LandingPage() {
               Frequently Asked Questions
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground font-medium">
-              Everything you need to know about NIVO for Indian freelancers.
+              Everything you need to know about NIVO.
             </p>
           </div>
 
@@ -687,7 +683,7 @@ export default function LandingPage() {
             Ready to organize your freelance bookings with NIVO?
           </h2>
           <p className="text-xs sm:text-lg opacity-90 max-w-xl mx-auto font-medium">
-            Join Indian photographers, DJs, MUAs, and event creators using NIVO today.
+            Join photographers, DJs, MUAs, and event creators using NIVO today.
           </p>
           <div className="pt-2">
             <Button 
@@ -717,7 +713,7 @@ export default function LandingPage() {
           </div>
 
           <div className="space-y-1">
-            <p>© 2026 NIVO India. All rights reserved.</p>
+            <p>© 2026 NIVO. All rights reserved.</p>
             <p className="text-[11px] text-muted-foreground/80">
               Developed & Designed by{" "}
               <a

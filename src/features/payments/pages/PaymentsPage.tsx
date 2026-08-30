@@ -3,27 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { format, isPast, isToday } from "date-fns";
 import {
   Search,
-  SlidersHorizontal,
   Download,
-  Plus,
   CreditCard,
   BanknoteArrowDown,
   AlertTriangle,
   Mail,
-  MoreVertical,
   Eye,
   FileText
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FloatingActionButton } from "@/components/common/FloatingActionButton";
 import { cn, formatCurrency } from "@/lib/utils";
 
-import StatCard from "@/features/dashboard/components/StatCard";
 import RevenueChart from "@/features/dashboard/components/RevenueChart";
 import { weeklyData, monthlyData } from "@/features/dashboard/components/RevenueChart/RevenueChart.constants";
 

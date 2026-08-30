@@ -3,7 +3,6 @@ import { CalendarDays, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import type { CalendarEvent } from "../../types/calendar.types";
-import { cn } from "@/lib/utils";
 
 interface Props {
   selectedDate: Date;
@@ -45,10 +44,11 @@ export default function SelectedDayPanel({ selectedDate, events = [] }: Props) {
           ) : (
             events.map((event) => {
               const isHex = event.color?.startsWith("#");
+              const statusStr = String(event.status || "").toLowerCase();
               const statusColor =
-                event.status === "confirmed" || event.status === "CONFIRMED"
+                statusStr === "confirmed"
                   ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                  : event.status === "pending" || event.status === "PENDING"
+                  : statusStr === "pending"
                   ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
                   : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
 

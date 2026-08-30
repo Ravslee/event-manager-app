@@ -1,10 +1,10 @@
-# 🇮🇳 NIVO — Indian Freelancer Production & Booking Manager
+# NIVO — Freelancer Event Production & Booking Manager
 
 <p align="center">
   <img src="public/login-bg.jpg" alt="NIVO Banner" width="100%" style="border-radius: 16px;" />
 </p>
 
-> **NIVO** is a modern, full-stack event production and booking management application designed specifically for **Indian Creative Freelancers** (Photographers, Videographers, DJs, Anchors/MCs, MUAs, Decorators, and Sound Engineers).
+> **NIVO** is a modern, full-stack event production and booking management application designed specifically for **Creative Freelancers** (Photographers, Videographers, DJs, Anchors/MCs, MUAs, Decorators, and Sound Engineers).
 
 ---
 
@@ -104,4 +104,4 @@
 ## 👨‍💻 Developer & Designer Credit
 
 Designed & Developed with ❤️ by **[LightApps.co](https://lightapps.co/)**.
-© 2026 NIVO India. All rights reserved.
+© 2026 NIVO. All rights reserved.

@@ -23,11 +23,7 @@ const AVATARS = [
   "avatar-5", "avatar-6", "avatar-7", "avatar-8"
 ];
 
-// Fallback utility to get initials if no avatar is present
-const getInitials = (name?: string) => {
-  if (!name) return "U";
-  return name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
-};
+
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");

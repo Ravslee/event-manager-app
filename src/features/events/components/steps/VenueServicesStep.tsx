@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
-import { MapPin, Search, Plus, Minus } from "lucide-react";
+import { MapPin, Plus, Minus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -34,20 +34,6 @@ export function VenueServicesStep() {
   // Watch services and duration for pricing calculations
   const watchedServices = watch("services") || {};
   const watchedDuration = watch("estimatedDuration") || 0;
-
-  const totalAmount = Object.entries(watchedServices)
-    .filter(([_, value]: any) => value?.checked)
-    .reduce((sum, [serviceId, value]: any) => {
-      const service = services.find((s) => s._id === serviceId);
-      if (!service) return sum;
-
-      const qty = value.quantity !== undefined
-        ? Number(value.quantity)
-        : (service.pricingModel === "hourly" ? Number(watchedDuration) || 1 : 1);
-
-      const cost = (service.price || 0) * qty;
-      return sum + cost;
-    }, 0);
 
   // Sort checked services to bubble up to top in order of selection
   const sortedServices = [...services].sort((a, b) => {
@@ -175,6 +161,7 @@ export function VenueServicesStep() {
                   <label htmlFor={service._id} className="flex-1 cursor-pointer min-w-0">
                     <div className="flex items-center gap-1 min-w-0">
                       <span className="text-[11px] sm:text-sm font-bold text-foreground truncate leading-tight">{service.name}</span>
+                      <span className="text-[10px] text-muted-foreground ml-1">({pricingLabel})</span>
                     </div>
                     {service.description && (
                       <p className="text-[9px] sm:text-xs text-muted-foreground truncate leading-none mt-0.5 hidden xs:block">{service.description}</p>

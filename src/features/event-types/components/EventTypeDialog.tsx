@@ -47,7 +47,7 @@ export const EventTypeDialog: FC<EventTypeDialogProps> = ({
     watch,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<EventTypeFormInput>({
+  } = useForm<any>({
     resolver: zodResolver(eventTypeSchema),
     defaultValues: {
       name: "",
@@ -148,7 +148,7 @@ export const EventTypeDialog: FC<EventTypeDialogProps> = ({
                 {...register("name")}
               />
               {errors.name?.message && (
-                <p className="text-xs text-destructive">{errors.name.message}</p>
+                <p className="text-xs text-destructive">{String(errors.name.message)}</p>
               )}
             </div>
 

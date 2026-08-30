@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Plus, Search, Trash2, Edit2, Star, SlidersHorizontal, LayoutGrid, List, Tag } from "lucide-react";
+import { Search, Trash2, Edit2, Star, SlidersHorizontal, LayoutGrid, List, Tag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

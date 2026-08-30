@@ -1,0 +1,43 @@
+name: Production CI/CD Pipeline & Quality Gates
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-gates:
+    name: 🛡️ Automated Quality Gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Project Dependencies
+        run: npm ci
+
+      - name: Linting Check (Oxlint)
+        run: npm run lint
+
+      - name: TypeScript Type Checking
+        run: npm run typecheck
+
+      - name: Vitest Unit & Component Tests
+        run: npm run test
+
+      - name: Install Playwright Chromium Browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Playwright E2E Browser Suite
+        run: npm run test:e2e
+
+      - name: Production Bundle Verification
+        run: npm run build

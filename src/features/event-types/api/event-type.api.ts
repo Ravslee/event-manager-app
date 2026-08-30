@@ -1,5 +1,5 @@
 import api from "@/api/axios";
-import type { EventType, EventTypeFormInput } from "../types/event-type.types";
+import type { EventTypeFormInput } from "../types/event-type.types";
 
 export const getEventTypes = async () => {
   const response = await api.get("/event-types");

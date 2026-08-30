@@ -60,7 +60,7 @@ export default function LoginPage() {
 
       {/* Footer Copyright */}
       <footer className="text-center text-xs text-muted-foreground font-medium py-2 z-10 space-y-1">
-        <p>© 2026 NIVO India. All rights reserved.</p>
+        <p>© 2026 NIVO. All rights reserved.</p>
         <p className="text-[11px] text-muted-foreground/80">
           Developed by{" "}
           <a

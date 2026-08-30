@@ -1,8 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, LayoutGrid, List, SlidersHorizontal, ArrowUpDown, DollarSign, Edit2, Trash2, Layers } from "lucide-react";
+import { LayoutGrid, List, SlidersHorizontal, ArrowUpDown, Edit2, Trash2, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { cn, formatCurrency } from "@/lib/utils";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
