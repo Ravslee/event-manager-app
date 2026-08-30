@@ -1,1 +1,2 @@
-/*    /    200
+# Cloudflare Pages SPA Routing
+# Cloudflare Pages automatically serves /index.html for client-side React routes.
